@@ -58,6 +58,21 @@ def create_app(config_class=Config):
             't': t
         }
 
+    # Security & CORS Headers
+    @app.after_request
+    def set_security_headers(response):
+        frontend_url = os.getenv('FRONTEND_URL', '')
+        if frontend_url:
+            response.headers['Access-Control-Allow-Origin'] = frontend_url
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+            response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS'
+
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        return response
+
     # Register Blueprints
     from routes.public import public_bp
     from routes.auth import auth_bp

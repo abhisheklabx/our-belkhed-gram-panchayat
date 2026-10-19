@@ -14,13 +14,35 @@ class Config:
     DB_PASSWORD = os.getenv('DB_PASSWORD', '')
     DB_NAME = os.getenv('DB_NAME', 'our_belkhed')
 
-    # Build MySQL URI; fallback to sqlite if specified or unavailable
-    if DB_USER and DB_HOST and DB_NAME:
+    # Build Database URI; supports DATABASE_URL (TiDB / managed cloud MySQL / PostgreSQL)
+    raw_db_url = os.getenv('DATABASE_URL')
+    if raw_db_url:
+        # Standardize connection dialect for SQLAlchemy
+        if raw_db_url.startswith('mysql://'):
+            raw_db_url = 'mysql+pymysql://' + raw_db_url[8:]
+        elif raw_db_url.startswith('postgres://'):
+            raw_db_url = 'postgresql+psycopg2://' + raw_db_url[11:]
+        elif raw_db_url.startswith('postgresql://') and not raw_db_url.startswith('postgresql+'):
+            raw_db_url = 'postgresql+psycopg2://' + raw_db_url[13:]
+
+        if 'mysql' in raw_db_url and 'charset=' not in raw_db_url:
+            sep = '&' if '?' in raw_db_url else '?'
+            raw_db_url = f"{raw_db_url}{sep}charset=utf8mb4"
+        SQLALCHEMY_DATABASE_URI = raw_db_url
+    elif DB_USER and DB_HOST and DB_NAME:
+        ssl_param = ""
+        if os.getenv('DB_SSL', '').lower() in ('true', '1', 'required'):
+            ssl_param = "&ssl_verify_cert=true"
         SQLALCHEMY_DATABASE_URI = (
-            f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
+            f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4{ssl_param}"
         )
     else:
         SQLALCHEMY_DATABASE_URI = "sqlite:///belkhed.db"
+
+    # Session Cookie Security
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False').lower() in ('true', '1', 't')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
