@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}नागरिक खाती व्यवस्थापन | Users | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold text-success mb-0"><i class="bi bi-people-fill me-2"></i> नोंदणीकृत नागरिक व कर्मचारी खाती (Users)</h3>
+      <p class="text-muted small mb-0">वापरकर्ता भूमिका (Role), खाते स्थिती व सुरक्षा नियंत्रण</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="bi bi-arrow-left me-1"></i> Dashboard
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+        <thead class="table-light">
+          <tr>
+            <th>आयडी</th>
+            <th>नाव</th>
+            <th>ईमेल किंवा मोबाईल</th>
+            <th>सद्य भूमिका (Role)</th>
+            <th>गावाशी संबंध</th>
+            <th>पसंतीची भाषा</th>
+            <th>खाते स्थिती</th>
+            <th>नोंदणी तारीख</th>
+            <th>भूमिका बदला</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+            <tr>
+              <td>#{{ u.id }}</td>
+              <td class="fw-bold text-dark">{{ u.name }}</td>
+              <td>{{ u.email_or_phone }}</td>
+              <td>
+                {% if u.role == 'admin' %}
+                  <span class="badge bg-danger">मुख्य प्रशासक</span>
+                {% elif u.role == 'staff' %}
+                  <span class="badge bg-warning text-dark">पंचायत कर्मचारी</span>
+                {% elif u.role == 'resident' %}
+                  <span class="badge bg-success">रहिवासी</span>
+                {% else %}
+                  <span class="badge bg-secondary">अभ्यागत</span>
+                {% endif %}
+              </td>
+              <td>{{ u.village_connection or '-' }}</td>
+              <td class="text-uppercase">{{ u.preferred_language or 'MR' }}</td>
+              <td>
+                {% if u.account_status == 'active' %}
+                  <span class="badge bg-success-subtle text-success">सक्रिय</span>
+                {% else %}
+                  <span class="badge bg-danger-subtle text-danger">{{ u.account_status }}</span>
+                {% endif %}
+              </td>
+              <td class="text-muted">{{ u.created_at.strftime('%d %b %Y') if u.created_at else '' }}</td>
+              <td>
+                <form action="{{ url_for('admin.user_update_role', uid=u.id) }}" method="POST" class="d-flex gap-1">
+                  <select name="role" class="form-select form-select-sm py-0" style="width: 100px;">
+                    <option value="visitor" {% if u.role == 'visitor' %}selected{% endif %}>Visitor</option>
+                    <option value="resident" {% if u.role == 'resident' %}selected{% endif %}>Resident</option>
+                    <option value="staff" {% if u.role == 'staff' %}selected{% endif %}>Staff</option>
+                    <option value="admin" {% if u.role == 'admin' %}selected{% endif %}>Admin</option>
+                  </select>
+                  <button type="submit" class="btn btn-sm btn-outline-success py-0 px-2" title="बदला">
+                    <i class="bi bi-check"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

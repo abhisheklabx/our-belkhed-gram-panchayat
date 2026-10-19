@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}तक्रार निवारण व्यवस्थापन | Complaints | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold text-success mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i> नागरी तक्रार व्यवस्थापन (Grievance Redressal)</h3>
+      <p class="text-muted small mb-0">नागरिकांनी नोंदवलेल्या तक्रारी, कर्मचारी वाटप व प्रगती अद्यतन</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="bi bi-arrow-left me-1"></i> Dashboard
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+    <form action="{{ url_for('admin.complaints') }}" method="GET" class="row g-2">
+      <div class="col-md-5">
+        <select name="status" class="form-select form-select-sm">
+          <option value="">-- सर्व स्थिती (All Status) --</option>
+          <option value="submitted" {% if sel_status == 'submitted' %}selected{% endif %}>प्राप्त (Submitted)</option>
+          <option value="in_progress" {% if sel_status == 'in_progress' %}selected{% endif %}>प्रगतीपथावर (In Progress)</option>
+          <option value="resolved" {% if sel_status == 'resolved' %}selected{% endif %}>निवारण झाले (Resolved)</option>
+        </select>
+      </div>
+      <div class="col-md-5">
+        <select name="category" class="form-select form-select-sm">
+          <option value="">-- सर्व प्रकार (All Categories) --</option>
+          <option value="water" {% if sel_cat == 'water' %}selected{% endif %}>पाणीपुरवठा (Water)</option>
+          <option value="road" {% if sel_cat == 'road' %}selected{% endif %}>रस्ता (Road)</option>
+          <option value="drainage" {% if sel_cat == 'drainage' %}selected{% endif %}>सांडपाणी (Drainage)</option>
+          <option value="electricity" {% if sel_cat == 'electricity' %}selected{% endif %}>स्ट्रीटलाईट (Electricity)</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-belkhed btn-sm w-100 fw-bold">लागू करा</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+        <thead class="table-light">
+          <tr>
+            <th>तक्रार क्रमांक</th>
+            <th>नागरिक नाव</th>
+            <th>संपर्क</th>
+            <th>प्रकार</th>
+            <th>ठिकाण</th>
+            <th>स्थिती</th>
+            <th>वाटप कर्मचारी</th>
+            <th>तारीख</th>
+            <th>कृती</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in complaints %}
+            <tr>
+              <td class="fw-bold">{{ c.complaint_number }}</td>
+              <td>{{ c.reporter_name }}</td>
+              <td>{{ c.reporter_contact }}</td>
+              <td class="text-capitalize">{{ c.category }}</td>
+              <td>{{ c.location_address or '-' }}</td>
+              <td>
+                {% if c.status == 'submitted' %}
+                  <span class="badge bg-secondary">प्राप्त</span>
+                {% elif c.status == 'in_progress' %}
+                  <span class="badge bg-warning text-dark">प्रगतीपथावर</span>
+                {% elif c.status == 'resolved' %}
+                  <span class="badge bg-success">निवारण</span>
+                {% else %}
+                  <span class="badge bg-danger">{{ c.status }}</span>
+                {% endif %}
+              </td>
+              <td>{{ c.assigned_staff or 'नियुक्त नाही' }}</td>
+              <td class="text-muted">{{ c.created_at.strftime('%d %b %Y') if c.created_at else '' }}</td>
+              <td>
+                <a href="{{ url_for('admin.complaint_detail', cid=c.id) }}" class="btn btn-sm btn-belkhed py-0 px-2">
+                  तपासा
+                </a>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="9" class="text-center text-muted py-4">कोणतीही तक्रार आढळली नाही.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

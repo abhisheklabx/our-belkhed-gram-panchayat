@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}तक्रार स्थिती ट्रॅक करा | Track Complaint | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="text-center mb-4">
+    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-2">
+      <i class="bi bi-clock-history me-1"></i> पारदर्शक स्थिती ट्रॅकर
+    </span>
+    <h2 class="fw-bold text-success">{{ t('complaint_track_title') }}</h2>
+    <p class="text-muted">आपल्या तक्रारीचा क्रमांक टाकून त्वरित सद्यस्थिती आणि कर्मचाऱ्यांची प्रगती तपासा.</p>
+  </div>
+
+  <!-- Search Card -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 mx-auto" style="max-width: 650px; background: #ffffff;">
+    <form action="{{ url_for('public.complaint_track') }}" method="GET">
+      <div class="input-group input-group-lg mb-2">
+        <span class="input-group-text bg-white border-end-0 text-success">
+          <i class="bi bi-hash"></i>
+        </span>
+        <input type="text" name="cid" class="form-control border-start-0 ps-0 shadow-none" placeholder="उदा. BLK-CMP-2026-0001" value="{{ cid or '' }}" required>
+        <button type="submit" class="btn btn-belkhed px-4 fw-bold">
+          <i class="bi bi-search me-1"></i> {{ t('btn_track') }}
+        </button>
+      </div>
+      <div class="small text-muted mt-2">
+        नमुना तक्रार क्रमांक: 
+        <a href="{{ url_for('public.complaint_track', cid='BLK-CMP-2026-0001') }}" class="text-success text-decoration-none fw-semibold">BLK-CMP-2026-0001</a> | 
+        <a href="{{ url_for('public.complaint_track', cid='BLK-CMP-2026-0002') }}" class="text-success text-decoration-none fw-semibold">BLK-CMP-2026-0002</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Complaint Result Display -->
+  {% if complaint %}
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mx-auto" style="max-width: 800px; background: #ffffff;">
+      
+      <div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4">
+        <div>
+          <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+            <i class="bi bi-ticket-detailed me-1"></i> {{ complaint.complaint_number }}
+          </span>
+          <div class="text-muted small mt-1">नोंदणी तारीख: {{ complaint.created_at.strftime('%d %B %Y, %I:%M %p') if complaint.created_at else '' }}</div>
+        </div>
+        <div class="mt-2 mt-md-0">
+          {% if complaint.status == 'submitted' %}
+            <span class="badge bg-secondary fs-6 px-3 py-2"><i class="bi bi-hourglass-split me-1"></i> प्राप्त (Submitted)</span>
+          {% elif complaint.status == 'in_progress' %}
+            <span class="badge bg-warning text-dark fs-6 px-3 py-2"><i class="bi bi-gear-fill me-1"></i> प्रगतीपथावर (In Progress)</span>
+          {% elif complaint.status == 'resolved' %}
+            <span class="badge bg-success fs-6 px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i> निवारण झाले (Resolved)</span>
+          {% else %}
+            <span class="badge bg-danger fs-6 px-3 py-2">{{ complaint.status }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3">
+            <div class="text-muted small">तक्रारदार (Reporter)</div>
+            <div class="fw-bold">{{ complaint.reporter_name }}</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded-3">
+            <div class="text-muted small">प्रकार (Category)</div>
+            <div class="fw-bold text-capitalize">{{ complaint.category }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h6 class="fw-bold text-dark">तक्रारीचे वर्णन (Description):</h6>
+        <div class="p-3 bg-light rounded-3 text-secondary" style="line-height: 1.6;">
+          {{ complaint.description }}
+        </div>
+      </div>
+
+      {% if complaint.location_address or complaint.latitude %}
+        <div class="mb-4">
+          <h6 class="fw-bold text-dark"><i class="bi bi-geo-alt-fill text-danger me-1"></i> स्थळ माहिती:</h6>
+          <p class="text-muted small mb-2">{{ complaint.location_address or 'स्थान गुणक उपलब्ध' }}</p>
+          {% if complaint.latitude and complaint.longitude %}
+            <a href="https://www.google.com/maps/search/?api=1&query={{ complaint.latitude }},{{ complaint.longitude }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill">
+              <i class="bi bi-google me-1"></i> गुगल मॅप्सवर स्थळ पहा
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if complaint.image_path %}
+        <div class="mb-4">
+          <h6 class="fw-bold text-dark">जोडलेले छायाचित्र:</h6>
+          <img src="{{ complaint.image_path }}" alt="Complaint image" class="img-fluid rounded-3 border" style="max-height: 250px;">
+        </div>
+      {% endif %}
+
+      {% if complaint.resolution_details %}
+        <div class="alert alert-success border-success rounded-3 mb-4">
+          <h6 class="fw-bold text-success mb-1"><i class="bi bi-check-circle-fill me-1"></i> निवारण तपशील (Resolution Details):</h6>
+          <div>{{ complaint.resolution_details }}</div>
+        </div>
+      {% endif %}
+
+      <!-- Action Timeline / Updates -->
+      <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="bi bi-activity me-1"></i> कारवाई व अद्यतने (Action Log):</h6>
+      <div class="d-flex flex-column gap-2">
+        {% for up in complaint.updates %}
+          {% if up.update_type == 'public' %}
+            <div class="p-3 bg-light rounded border-start border-4 border-success">
+              <div class="small text-muted mb-1">{{ up.created_at.strftime('%d %b %Y, %I:%M %p') if up.created_at else '' }}</div>
+              <div class="fw-medium text-dark">{{ up.message }}</div>
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="text-muted small">सध्या कोणतेही नवीन अद्यतन उपलब्ध नाही.</div>
+        {% endfor %}
+      </div>
+
+    </div>
+  {% elif cid %}
+    <div class="alert alert-warning text-center mx-auto rounded-4 p-4" style="max-width: 650px;">
+      <i class="bi bi-exclamation-circle fs-3 text-warning mb-2 d-block"></i>
+      <strong>तक्रार सापडली नाही!</strong><br>
+      '{{ cid }}' या क्रमांकाशी जुळणारी कोणतीही तक्रार सापडली नाही. कृपया तक्रार क्रमांक तपासून पुन्हा प्रयत्न करा.
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

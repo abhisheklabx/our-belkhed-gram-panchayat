@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}प्रशासक नियंत्रण कक्ष | Admin Desk | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <!-- Admin Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-1 rounded-pill mb-1">
+        <i class="bi bi-shield-lock-fill me-1"></i> अधिकृत ग्रामपंचायत प्रशासक पोर्टल
+      </span>
+      <h3 class="fw-bold text-success mb-0">प्रशासक नियंत्रण कक्ष (Admin Overview)</h3>
+      <p class="text-muted small mb-0">लॉगिन: {{ current_user.name }} ({{ current_user.email_or_phone }})</p>
+    </div>
+    <div class="d-flex gap-2 mt-2 mt-md-0">
+      <a href="{{ url_for('admin.household_new') }}" class="btn btn-sm btn-belkhed rounded-pill">
+        <i class="bi bi-plus-circle me-1"></i> नवीन घर नोंदवा
+      </a>
+      <a href="{{ url_for('admin.announcements') }}" class="btn btn-sm btn-outline-success rounded-pill">
+        <i class="bi bi-megaphone me-1"></i> सूचना प्रकाशित करा
+      </a>
+    </div>
+  </div>
+
+  <!-- Admin Sub Navigation Tabs (Desktop Friendly) -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-2">
+      <ul class="nav nav-pills nav-fill gap-1" style="font-size: 0.9rem;">
+        <li class="nav-item">
+          <a class="nav-link active fw-bold" href="{{ url_for('admin.dashboard') }}"><i class="bi bi-speedometer2 me-1"></i> Overview</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ url_for('admin.households') }}"><i class="bi bi-house-door me-1"></i> घरे व्यवस्थापन</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ url_for('admin.complaints') }}"><i class="bi bi-exclamation-triangle me-1"></i> तक्रारी ({{ metrics.complaints_pending }})</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ url_for('admin.verifications') }}"><i class="bi bi-patch-check me-1"></i> पडताळणी अर्ज</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ url_for('admin.announcements') }}"><i class="bi bi-megaphone me-1"></i> सूचना फलक</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ url_for('admin.projects') }}"><i class="bi bi-hammer me-1"></i> विकासकामे</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ url_for('admin.users') }}"><i class="bi bi-people me-1"></i> नागरिक खाती</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="{{ url_for('admin.audit_logs') }}"><i class="bi bi-journal-text me-1"></i> Audit Logs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Metrics Grid -->
+  <div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card p-3 border-start border-4 border-success">
+        <div class="text-muted small fw-semibold">एकूण नोंदणीकृत नागरिक</div>
+        <div class="fs-2 fw-bold text-dark">{{ metrics.users_count }}</div>
+        <div class="small text-muted">प्रमाणित रहिवासी: <span class="text-success fw-bold">{{ metrics.verified_residents }}</span></div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card p-3 border-start border-4 border-primary">
+        <div class="text-muted small fw-semibold">सक्रिय घरे यादी (Households)</div>
+        <div class="fs-2 fw-bold text-dark">{{ metrics.active_listings }}</div>
+        <div class="small text-muted">एकूण नोंदणी: {{ metrics.households_count }}</div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card p-3 border-start border-4 border-warning">
+        <div class="text-muted small fw-semibold">प्रलंबित तक्रारी (Awaiting Action)</div>
+        <div class="fs-2 fw-bold text-warning">{{ metrics.complaints_pending }}</div>
+        <div class="small text-muted">एकूण तक्रारी: {{ metrics.complaints_total }}</div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card p-3 border-start border-4 border-info">
+        <div class="text-muted small fw-semibold">निवारण झालेल्या तक्रारी</div>
+        <div class="fs-2 fw-bold text-success">{{ metrics.complaints_resolved }}</div>
+        <div class="small text-muted">सकारात्मक निकाल</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Recent Complaints Table -->
+    <div class="col-lg-8">
+      <div class="civic-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history me-1"></i> ताज्या प्राप्त तक्रारी (Recent Grievances)</h5>
+          <a href="{{ url_for('admin.complaints') }}" class="btn btn-sm btn-outline-secondary rounded-pill">सर्व पहा</a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+            <thead class="table-light">
+              <tr>
+                <th>तक्रार क्र.</th>
+                <th>तक्रारदार</th>
+                <th>प्रकार</th>
+                <th>स्थिती</th>
+                <th>कृती</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in complaints %}
+                <tr>
+                  <td class="fw-bold">{{ c.complaint_number }}</td>
+                  <td>{{ c.reporter_name }}</td>
+                  <td class="text-capitalize">{{ c.category }}</td>
+                  <td>
+                    {% if c.status == 'submitted' %}
+                      <span class="badge bg-secondary">प्राप्त</span>
+                    {% elif c.status == 'in_progress' %}
+                      <span class="badge bg-warning text-dark">प्रगतीपथावर</span>
+                    {% elif c.status == 'resolved' %}
+                      <span class="badge bg-success">निवारण</span>
+                    {% else %}
+                      <span class="badge bg-danger">{{ c.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('admin.complaint_detail', cid=c.id) }}" class="btn btn-sm btn-belkhed py-0 px-2">तपासा</a>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-3">सध्या कोणतीही तक्रार प्रलंबित नाही.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Audit Logs -->
+    <div class="col-lg-4">
+      <div class="civic-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-dark mb-0"><i class="bi bi-journal-text me-1"></i> प्रशासकीय हालचाली</h5>
+          <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-sm btn-outline-secondary rounded-pill">Logs</a>
+        </div>
+
+        <div class="d-flex flex-column gap-2" style="font-size: 0.82rem;">
+          {% for log in audits %}
+            <div class="p-2 bg-light rounded">
+              <div class="d-flex justify-content-between text-muted">
+                <span class="fw-bold text-dark">{{ log.action }}</span>
+                <span>{{ log.created_at.strftime('%H:%M | %d %b') if log.created_at else '' }}</span>
+              </div>
+              <div class="text-truncate text-secondary">{{ log.details or '-' }}</div>
+            </div>
+          {% else %}
+            <div class="text-muted small">कोणतीही नोंद नाही.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

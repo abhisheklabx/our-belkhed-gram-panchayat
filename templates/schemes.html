@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}शासकीय योजना | Government Schemes | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="mb-4">
+    <span class="badge bg-warning-subtle text-dark fw-bold px-3 py-1 rounded-pill mb-2">
+      <i class="bi bi-bank me-1"></i> केंद्र व राज्य शासन लोककल्याण योजना
+    </span>
+    <h2 class="fw-bold text-success">{{ t('nav_schemes') }}</h2>
+    <p class="text-muted">बेलखेड गावातील नागरिकांसाठी लागू असलेल्या प्रमुख शासकीय योजना, पात्रता व कागदपत्रे माहिती.</p>
+  </div>
+
+  <div class="alert alert-light border d-flex align-items-center mb-4 rounded-3 text-muted small">
+    <i class="bi bi-shield-exclamation text-warning fs-4 me-3"></i>
+    <div>
+      <strong>माहिती सूचना:</strong> खाली दिलेली माहिती केवळ नागरिकांच्या प्राथमिक मार्गदर्शनासाठी आहे. योजनांचे अंतिम निकष, लाभार्थी निवड व मंजुरी शासनाच्या अधिकृत नियमावली व ग्रामसभेच्या मंजुरीनुसार होते.
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Scheme 1: PM Awas Yojana -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="badge bg-success-subtle text-success">गृहनिर्माण योजना</span>
+          <span class="badge bg-light text-dark border">ग्रामीण</span>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">पंतप्रधान आवास योजना - ग्रामीण (PMAY-G)</h4>
+        <p class="text-muted small">
+          ग्रामीण भागातील बेघर व कच्च्या घरात राहणाऱ्या कुटुंबांना पक्के घर बांधण्यासाठी आर्थिक अनुदान.
+        </p>
+        <h6 class="fw-bold text-dark mt-3 mb-2" style="font-size: 0.9rem;">आवश्यक कागदपत्रे सूची (Checklist):</h6>
+        <ul class="list-unstyled text-muted small mb-3">
+          <li><i class="bi bi-check2 text-success me-1"></i> आधार कार्ड (कुटुंबातील सर्व सदस्य)</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> बँक पासबुक व आधार जोडणी पुरावा</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> जागा मालकीचा उतारा / नमुना ८</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> जॉब कार्ड क्रमांक (MGNREGA)</li>
+        </ul>
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+          <span class="fw-bold text-success">अनुदान: ₹ 1,20,000 + मजुरी</span>
+          <a href="https://pmayg.nic.in" target="_blank" class="btn btn-sm btn-outline-success rounded-pill">अधिकृत पोर्टल <i class="bi bi-box-arrow-up-right"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scheme 2: Jal Jeevan Mission -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="badge bg-info-subtle text-info">पेयजल योजना</span>
+          <span class="badge bg-light text-dark border">हर घर जल</span>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">जल जीवन मिशन (Jal Jeevan Mission)</h4>
+        <p class="text-muted small">
+          बेलखेड गावातील प्रत्येक घराला वैयक्तिक नळ जोडणीद्वारे शुद्ध व पुरेसे पिण्याचे पाणी उपलब्ध करून देणे.
+        </p>
+        <h6 class="fw-bold text-dark mt-3 mb-2" style="font-size: 0.9rem;">आवश्यक कागदपत्रे सूची:</h6>
+        <ul class="list-unstyled text-muted small mb-3">
+          <li><i class="bi bi-check2 text-success me-1"></i> ग्रामपंचायत नळ जोडणी विहित अर्ज</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> आधार कार्ड प्रत व घरपट्टी कर पावती</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> ग्रामपंचायत पाणीपट्टी नियमानुसार भरण्याचे हमीपत्र</li>
+        </ul>
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+          <span class="fw-bold text-info">नळ जोडणी सुविधा</span>
+          <a href="{{ url_for('public.contact') }}" class="btn btn-sm btn-outline-info rounded-pill">ग्रामपंचायतीत संपर्क करा</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scheme 3: PM Kisan & Namo Shetkari -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="badge bg-warning-subtle text-dark">शेतकरी कल्याण</span>
+          <span class="badge bg-light text-dark border">वार्षिक मदत</span>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">PM किसान व नमो शेतकरी महासन्मान</h4>
+        <p class="text-muted small">
+          पात्र शेतकरी कुटुंबांना आर्थिक स्थैर्य देण्यासाठी केंद्र व राज्य शासनाकडून एकत्रित वार्षिक आर्थिक सहाय्य.
+        </p>
+        <h6 class="fw-bold text-dark mt-3 mb-2" style="font-size: 0.9rem;">आवश्यक कागदपत्रे व अटी:</h6>
+        <ul class="list-unstyled text-muted small mb-3">
+          <li><i class="bi bi-check2 text-success me-1"></i> शेती ७/१२ व ८-अ डिजिटल उतारा</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> बायोमेट्रिक किंवा ओटीपी ई-केवायसी (e-KYC पूर्ण असणे बंधनकारक)</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> बँक खात्याशी आधार लिंक (DBT Enabled)</li>
+        </ul>
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+          <span class="fw-bold text-warning text-dark">वार्षिक: ₹ 12,000</span>
+          <a href="https://pmkisan.gov.in" target="_blank" class="btn btn-sm btn-outline-warning text-dark rounded-pill">PM-Kisan पोर्टल <i class="bi bi-box-arrow-up-right"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scheme 4: MGNREGA -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="badge bg-primary-subtle text-primary">रोजगार हमी</span>
+          <span class="badge bg-light text-dark border">१०० दिवस काम</span>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">महात्मा गांधी राष्ट्रीय रोजगार हमी (MGNREGA)</h4>
+        <p class="text-muted small">
+          ग्रामीण भागातील अकुशल मजुरी करणाऱ्या प्रत्येक कुटुंबाला वर्षभरात किमान १०० दिवसांच्या रोजगाराची कायदेशीर हमी.
+        </p>
+        <h6 class="fw-bold text-dark mt-3 mb-2" style="font-size: 0.9rem;">सेवा व नोंदणी:</h6>
+        <ul class="list-unstyled text-muted small mb-3">
+          <li><i class="bi bi-check2 text-success me-1"></i> ग्रामपंचायतीत मोफत जॉब कार्ड (Job Card) नोंदणी</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> शेततळे, वृक्षारोपण, सिमेंट रस्ते व माती नाला बांध कामे</li>
+          <li><i class="bi bi-check2 text-success me-1"></i> मजुरी थेट आधार संलग्न बँक खात्यात जमा</li>
+        </ul>
+        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+          <span class="fw-bold text-primary">जॉब कार्ड नोंदणी सुरू</span>
+          <a href="{{ url_for('public.contact') }}" class="btn btn-sm btn-outline-primary rounded-pill">ग्राम रोजगार सेवक संपर्क</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

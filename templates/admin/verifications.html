@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}रहिवासी पडताळणी अर्ज | Verifications | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold text-success mb-0"><i class="bi bi-patch-check-fill me-2"></i> ग्राम रहिवासी पडताळणी अर्ज (Resident Verifications)</h3>
+      <p class="text-muted small mb-0">गावातील नागरिकांचे रहिवासी दर्जा प्रमाणीकरण विनंत्या</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="bi bi-arrow-left me-1"></i> Dashboard
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+        <thead class="table-light">
+          <tr>
+            <th>अर्ज क्र.</th>
+            <th>नागरिक नाव</th>
+            <th>ईमेल / संपर्क</th>
+            <th>संलग्न घर</th>
+            <th>प्रविष्ट केलेला कोड</th>
+            <th>स्थिती</th>
+            <th>पुनरावलोकन नोंदी</th>
+            <th>कृती</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+            <tr>
+              <td class="fw-bold">#{{ r.id }}</td>
+              <td>{{ r.user.name if r.user else '-' }}</td>
+              <td>{{ r.user.email_or_phone if r.user else '-' }}</td>
+              <td>{{ r.household.full_name if r.household else 'सामान्य विनंती' }} ({{ r.household.house_number if r.household else '' }})</td>
+              <td><code>{{ r.verification_code_entered or '-' }}</code></td>
+              <td>
+                {% if r.verification_status == 'approved' %}
+                  <span class="badge bg-success">मंजूर (Approved)</span>
+                {% elif r.verification_status == 'rejected' %}
+                  <span class="badge bg-danger">नाकारले (Rejected)</span>
+                {% else %}
+                  <span class="badge bg-warning text-dark">प्रलंबित (Pending)</span>
+                {% endif %}
+              </td>
+              <td><small class="text-muted">{{ r.review_notes or '-' }}</small></td>
+              <td>
+                {% if r.verification_status == 'pending' %}
+                  <div class="d-flex gap-1">
+                    <form action="{{ url_for('admin.verification_action', rid=r.id) }}" method="POST">
+                      <input type="hidden" name="action" value="approve">
+                      <input type="hidden" name="review_notes" value="कार्यालयीन पडताळणीनुसार मंजूर.">
+                      <button type="submit" class="btn btn-sm btn-success py-0 px-2" title="मंजूर करा">
+                        <i class="bi bi-check-lg"></i> मंजूर
+                      </button>
+                    </form>
+                    <form action="{{ url_for('admin.verification_action', rid=r.id) }}" method="POST">
+                      <input type="hidden" name="action" value="reject">
+                      <input type="hidden" name="review_notes" value="कागदपत्रे अपूर्ण / कोड अवैध.">
+                      <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" title="नाकारा">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </form>
+                  </div>
+                {% else %}
+                  <span class="text-muted small">पूर्ण झाले</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">कोणताही प्रलंबित पडताळणी अर्ज नाही.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

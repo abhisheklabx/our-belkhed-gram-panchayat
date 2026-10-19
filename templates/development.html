@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}गाव विकासकामे | Development Works | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="mb-4">
+    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-2">
+      <i class="bi bi-hammer me-1"></i> गाव प्रगती व पारदर्शकता
+    </span>
+    <h2 class="fw-bold text-success">{{ t('nav_development') }}</h2>
+    <p class="text-muted">बेलखेड ग्रामपंचायतीत चालू असलेल्या व पूर्ण झालेल्या विकास प्रकल्पांची अधिकृत माहिती व मंजूर निधी.</p>
+  </div>
+
+  <div class="row g-4">
+    {% for proj in projects %}
+      <div class="col-lg-4 col-md-6">
+        <div class="civic-card p-4 d-flex flex-column h-100">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            {% if proj.status == 'ongoing' %}
+              <span class="badge bg-warning text-dark"><i class="bi bi-gear-wide-connected me-1"></i> प्रगतीपथावर (Ongoing)</span>
+            {% elif proj.status == 'completed' %}
+              <span class="badge bg-success"><i class="bi bi-check-all me-1"></i> पूर्ण झाले (Completed)</span>
+            {% else %}
+              <span class="badge bg-secondary"><i class="bi bi-clock me-1"></i> नियोजित (Planned)</span>
+            {% endif %}
+            <span class="fw-bold text-success">{{ proj.approved_budget or 'मंजूर निधी' }}</span>
+          </div>
+
+          <h5 class="fw-bold text-dark mt-2 mb-2">{{ proj.title }}</h5>
+          <p class="text-muted small mb-3 flex-grow-1" style="line-height: 1.5;">
+            {{ proj.description }}
+          </p>
+
+          <div class="p-2 bg-light rounded text-muted mb-3" style="font-size: 0.8rem;">
+            <div><strong>सुरुवात:</strong> {{ proj.start_date or 'नोंद उपलब्ध' }}</div>
+            <div><strong>अपेक्षित पूर्णता:</strong> {{ proj.expected_completion or proj.actual_completion or 'वेळेवर' }}</div>
+          </div>
+
+          {% if proj.latitude and proj.longitude %}
+            <div class="mt-auto">
+              <a href="https://www.google.com/maps/search/?api=1&query={{ proj.latitude }},{{ proj.longitude }}" target="_blank" class="btn btn-sm btn-outline-success w-100 rounded-pill">
+                <i class="bi bi-geo-alt me-1"></i> प्रकल्पाचे स्थळ नकाशावर पहा
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12">
+        <div class="alert alert-light border text-center p-5">
+          <i class="bi bi-info-circle fs-3 text-muted d-block mb-2"></i>
+          सध्या कोणतेही प्रकल्प प्रकाशित केलेले नाहीत.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="alert alert-light border mt-4 text-muted small rounded-3">
+    <i class="bi bi-shield-check text-success me-1"></i> <strong>पारदर्शकता नियम:</strong> सर्व प्रकल्प माहिती ग्रामसभेच्या मंजुरीने व अधिकृत अंदाजपत्रकानुसार प्रकाशित करण्यात येते.
+  </div>
+
+</div>
+{% endblock %}

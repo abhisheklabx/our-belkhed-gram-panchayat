@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}संपर्क | Contact Us | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="mb-4">
+    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-2">
+      <i class="bi bi-telephone-fill me-1"></i> संपर्क व सहाय्यता कक्ष
+    </span>
+    <h2 class="fw-bold text-success">{{ t('nav_contact') }}</h2>
+    <p class="text-muted">ग्रामपंचायत बेलखेड कार्यालयीन संपर्क, पत्ते आणि आपत्कालीन दूरध्वनी क्रमांक.</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Office Details -->
+    <div class="col-lg-7">
+      <div class="civic-card p-4 h-100">
+        <h4 class="fw-bold text-success mb-3"><i class="bi bi-building me-2"></i> ग्रामपंचायत कार्यालय, बेलखेड</h4>
+        
+        <p class="text-secondary" style="line-height: 1.7;">
+          <strong>पत्ता (Office Address):</strong><br>
+          मु. पो. बेलखेड, ता. उमरखेड,<br>
+          जि. यवतमाळ, महाराष्ट्र राज्य - ४४५२०६.<br>
+          <strong>स्थानिक खूण:</strong> हनुमान मंदिरासमोर, गावठाण मुख्य रस्ता
+        </p>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-3">
+              <div class="text-muted small">कार्यालयीन दिवस</div>
+              <div class="fw-bold">सोमवार ते शनिवार</div>
+              <small class="text-muted">(शासकीय सुट्टी वगळून)</small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 bg-light rounded-3">
+              <div class="text-muted small">कार्यालयीन वेळ</div>
+              <div class="fw-bold">स. १०:०० ते सायं. ०५:३०</div>
+              <small class="text-muted">(भेट वेळ: दुपारी १२ ते ३)</small>
+            </div>
+          </div>
+        </div>
+
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-shield-check text-success me-1"></i> नागरी तक्रार व दुरुस्ती संपर्क</h5>
+        <p class="text-muted small">
+          पाणीपुरवठा, वीज किंवा रस्त्याच्या तक्रारीसाठी आपण थेट संकेतस्थळावरील तक्रार निवारण फॉर्म वापरू शकता अथवा कार्यालयात अर्ज सादर करू शकता.
+        </p>
+        <div class="d-flex gap-2">
+          <a href="{{ url_for('public.complaint_new') }}" class="btn btn-belkhed btn-sm rounded-pill">
+            <i class="bi bi-exclamation-circle me-1"></i> ऑनलाईन तक्रार नोंदवा
+          </a>
+          <a href="{{ url_for('public.gis_map') }}" class="btn btn-belkhed-outline btn-sm rounded-pill">
+            <i class="bi bi-geo-alt me-1"></i> नकाशावर स्थान पहा
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Shortcuts & Guidelines -->
+    <div class="col-lg-5">
+      <div class="civic-card p-4 h-100">
+        <h5 class="fw-bold text-danger mb-3"><i class="bi bi-telephone-plus-fill me-2"></i> महत्त्वाचे हेल्पलाईन क्रमांक</h5>
+        
+        <div class="list-group list-group-flush mb-4">
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">आपत्कालीन रुग्णवाहिका (Ambulance)</div>
+              <div class="small text-muted">मोफत २४ तास आरोग्य सेवा</div>
+            </div>
+            <a href="tel:108" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-3">१०८</a>
+          </div>
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">पोलीस नियंत्रण कक्ष (Police Control)</div>
+              <div class="small text-muted">उमरखेड पोलीस स्टेशन कार्यक्षेत्र</div>
+            </div>
+            <a href="tel:112" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3">११२</a>
+          </div>
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">अग्निशामक दल (Fire Brigade)</div>
+              <div class="small text-muted">आपत्कालीन अग्निशमन</div>
+            </div>
+            <a href="tel:101" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-3">१०१</a>
+          </div>
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">महावितरण वीज हेल्पलाईन</div>
+              <div class="small text-muted">ग्रामीण वीज पुरवठा तक्रार</div>
+            </div>
+            <a href="tel:1912" class="btn btn-sm btn-outline-warning text-dark fw-bold rounded-pill px-3">१९१२</a>
+          </div>
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">महिला हेल्पलाईन (Women Helpline)</div>
+              <div class="small text-muted">मदत व समुपदेशन कक्ष</div>
+            </div>
+            <a href="tel:1091" class="btn btn-sm btn-outline-secondary fw-bold rounded-pill px-3">१०९१</a>
+          </div>
+        </div>
+
+        <div class="p-3 bg-light rounded-3 text-muted small">
+          <i class="bi bi-qr-code me-1"></i> बेलखेड गावाचा डिजिटल पोर्टल क्यूआर कोड इतर नागरिकांना पाठवण्यासाठी 
+          <a href="{{ url_for('public.qr_landing') }}" class="text-success fw-bold text-decoration-none">येथे क्लिक करा</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

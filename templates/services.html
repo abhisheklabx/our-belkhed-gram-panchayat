@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}ग्रामपंचायत सेवा | Services | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="mb-4">
+    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-2">
+      <i class="bi bi-grid-3x3-gap-fill me-1"></i> नागरी सुविधा केंद्र (Citizen Services)
+    </span>
+    <h2 class="fw-bold text-success">{{ t('nav_services') }}</h2>
+    <p class="text-muted">बेलखेड ग्रामपंचायतीच्या विविध सेवा, तक्रार निवारण आणि शासकीय योजनांची एकात्मिक माहिती.</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Category 1: Grievance Redressal -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="civic-card-icon me-3 mb-0" style="background-color: #fee2e2; color: #dc2626;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-0">तक्रार निवारण प्रणाली (Grievances)</h5>
+            <small class="text-muted">पाणी, रस्ते, वीज व स्वच्छता समस्यांची थेट नोंदणी</small>
+          </div>
+        </div>
+        <p class="text-muted small">
+          गावातील सार्वजनिक समस्यांची छायाचित्रासह व भौगोलिक स्थानासह नोंद करा. तक्रार नोंदवल्यावर अद्वितीय ट्रॅकिंग आयडी मिळेल ज्याद्वारे आपण कामाची प्रगती पाहू शकता.
+        </p>
+        <div class="d-flex gap-2">
+          <a href="{{ url_for('public.complaint_new') }}" class="btn btn-danger btn-sm rounded-pill fw-semibold">
+            <i class="bi bi-plus-circle me-1"></i> नवीन तक्रार नोंदवा
+          </a>
+          <a href="{{ url_for('public.complaint_track') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+            <i class="bi bi-search me-1"></i> तक्रार स्थिती तपासा
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category 2: Find a Home -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="civic-card-icon me-3 mb-0" style="background-color: #e0f2fe; color: #0288d1;">
+            <i class="bi bi-house-door-fill"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-0">घर शोधक (Find a Home)</h5>
+            <small class="text-muted">गावातील घरांचे थेट गुगल मॅप्स नेव्हिगेशन</small>
+          </div>
+        </div>
+        <p class="text-muted small">
+          नातेवाईक, पाहुणे किंवा शासकीय कर्मचाऱ्यांसाठी गावातील कोणत्याही नोंदणीकृत कुटुंबाचे घर शोधणे आणि गुगल मॅप्सद्वारे अचूक रस्ता मिळवणे सोपे झाले आहे.
+        </p>
+        <a href="{{ url_for('public.find_home') }}" class="btn btn-primary btn-sm rounded-pill fw-semibold">
+          <i class="bi bi-search me-1"></i> घर शोधा
+        </a>
+      </div>
+    </div>
+
+    <!-- Category 3: Government Schemes -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="civic-card-icon me-3 mb-0" style="background-color: #fef3c7; color: #d97706;">
+            <i class="bi bi-card-checklist"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-0">शासकीय योजना मार्गदर्शक (Govt Schemes)</h5>
+            <small class="text-muted">पात्रता निकष व आवश्यक कागदपत्रे पडताळणी</small>
+          </div>
+        </div>
+        <p class="text-muted small">
+          पंतप्रधान आवास योजना (ग्रामीण), जल जीवन मिशन नळ जोडणी, महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार हमी योजना (नरेगा) व किसान सन्मान निधीबाबत संपूर्ण माहिती.
+        </p>
+        <a href="{{ url_for('public.schemes') }}" class="btn btn-warning btn-sm text-dark rounded-pill fw-semibold">
+          <i class="bi bi-arrow-right-circle me-1"></i> योजनांची माहिती पहा
+        </a>
+      </div>
+    </div>
+
+    <!-- Category 4: Panchayat Documentation Guidance -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4">
+        <div class="d-flex align-items-center mb-3">
+          <div class="civic-card-icon me-3 mb-0" style="background-color: #ecfdf5; color: #059669;">
+            <i class="bi bi-file-earmark-text-fill"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-0">प्रमाणपत्र व दाखले मार्गदर्शन</h5>
+            <small class="text-muted">जन्म-मृत्यू, रहिवासी व कर भरणा पावती</small>
+          </div>
+        </div>
+        <p class="text-muted small">
+          ग्रामपंचायतीकडून दिल्या जाणाऱ्या विविध दाखल्यांसाठी (जन्म, मृत्यू, विवाह, नमुना ८ कर आकारणी) लागणारे अर्ज, शुल्क व कार्यालयीन कार्यपद्धतीची माहिती.
+        </p>
+        <a href="{{ url_for('public.contact') }}" class="btn btn-success btn-sm rounded-pill fw-semibold">
+          <i class="bi bi-building me-1"></i> कार्यालयीन संपर्क माहिती
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-light border mt-4 text-muted small rounded-3">
+    <i class="bi bi-info-circle me-1"></i> <strong>माहिती सूचना:</strong> हे संकेतस्थळ नागरिकांना मार्गदर्शन व माहिती सुलभतेसाठी कार्यरत आहे. अधिकृत स्वाक्षरीचे दाखले व कायदेशीर कागदपत्रे शासनाच्या नियमानुसार प्रत्यक्ष ग्रामपंचायत कार्यालयातून किंवा अधिकृत महा-ई-सेवा केंद्राद्वारे वितरित केली जातात.
+  </div>
+
+</div>
+{% endblock %}

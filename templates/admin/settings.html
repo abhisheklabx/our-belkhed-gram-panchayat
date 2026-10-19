@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}पोर्टल सेटिंग्ज | Settings | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold text-success mb-0"><i class="bi bi-gear-fill me-2"></i> ग्रामपंचायत पोर्टल सेटिंग्ज (Portal Settings)</h3>
+      <p class="text-muted small mb-0">गाव तपशील, सुरक्षितता व पर्यावरण संरचना</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="bi bi-arrow-left me-1"></i> Dashboard
+    </a>
+  </div>
+
+  <div class="row g-4">
+    <!-- Village Parameters -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4 h-100">
+        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">ग्रामपंचायत माहिती व गुणक</h5>
+
+        <table class="table table-borderless small mb-0">
+          <tbody>
+            <tr>
+              <th style="width: 40%;">गावचे नाव (मराठी):</th>
+              <td>{{ config.VILLAGE_NAME_MR }}</td>
+            </tr>
+            <tr>
+              <th>गावचे नाव (English):</th>
+              <td>{{ config.VILLAGE_NAME_EN }}</td>
+            </tr>
+            <tr>
+              <th>तालुका / जिल्हा:</th>
+              <td>{{ config.VILLAGE_TALUKA }} / {{ config.VILLAGE_DISTRICT }}</td>
+            </tr>
+            <tr>
+              <th>पिन कोड:</th>
+              <td>{{ config.VILLAGE_PIN }}</td>
+            </tr>
+            <tr>
+              <th>मध्यवर्ती अक्षांश (Latitude):</th>
+              <td><code>{{ config.VILLAGE_LATITUDE }}</code></td>
+            </tr>
+            <tr>
+              <th>मध्यवर्ती रेखांश (Longitude):</th>
+              <td><code>{{ config.VILLAGE_LONGITUDE }}</code></td>
+            </tr>
+            <tr>
+              <th>क्षेत्रफळ:</th>
+              <td>745.31 हेक्टर (२०११ महसूल नोंद)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert alert-light border mt-3 small mb-0">
+          <i class="bi bi-info-circle me-1"></i> हे तपशील <code>.env</code> फाईलद्वारे सुरक्षितपणे नियंत्रित केले जातात.
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Integration Status -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4 h-100">
+        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">प्रणाली व डेटाबेस स्थिती</h5>
+
+        <div class="list-group list-group-flush small mb-3">
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">डेटाबेस इंजिन (Database Engine)</div>
+              <div class="text-muted">MySQL (PyMySQL Connector)</div>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success">
+              <i class="bi bi-check-circle-fill me-1"></i> Connected (localhost:3306)
+            </span>
+          </div>
+
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">डेटाबेस नाव (Database Name)</div>
+              <div class="text-muted">{{ config.DB_NAME }}</div>
+            </div>
+            <span class="badge bg-light text-dark border">utf8mb4</span>
+          </div>
+
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">गूगल जेमिनी एआय सहाय्यक (Gemini API)</div>
+              <div class="text-muted">Belkhed Civic Assistant Engine</div>
+            </div>
+            {% if config.GEMINI_API_KEY %}
+              <span class="badge bg-success-subtle text-success border border-success">
+                <i class="bi bi-check-circle-fill me-1"></i> API Key Configured
+              </span>
+            {% else %}
+              <span class="badge bg-warning-subtle text-dark border border-warning">
+                Prototype Fallback Mode
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">अधिकृत लोगो (Official Logo)</div>
+              <div class="text-muted">static/images/belkhed_logo.png</div>
+            </div>
+            <img src="{{ url_for('static', filename='images/belkhed_logo.png') }}" alt="logo" style="height: 32px; width: 32px; border-radius: 50%;">
+          </div>
+        </div>
+
+        <div class="p-3 bg-light rounded text-muted small" style="font-size: 0.8rem;">
+          <i class="bi bi-shield-lock-fill text-success me-1"></i> <strong>सुरक्षा सूचना:</strong> डेटाबेस पासवर्ड, एपीआय की आणि खाजगी क्रेडेंशियल्स कधीही वेब पृष्ठावर उघडे केले जात नाहीत.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}गोपनीयता धोरण | Privacy Policy | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mx-auto" style="max-width: 850px; background: #ffffff;">
+    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-2 align-self-start">
+      <i class="bi bi-shield-lock-fill me-1"></i> डेटा संरक्षण व गोपनीयता
+    </span>
+    <h2 class="fw-bold text-success mb-3">गोपनीयता धोरण (Privacy Policy)</h2>
+    <p class="text-muted small">शेवटचे अद्यतन: ऑक्टोबर २०२६ | ग्रामपंचायत बेलखेड</p>
+
+    <!-- Prominent banner requested by user -->
+    <div class="privacy-banner mb-4">
+      <div class="d-flex">
+        <i class="bi bi-shield-fill-check fs-3 me-3 text-success"></i>
+        <div>
+          <h5 class="fw-bold text-success mb-1">नागरिक डेटा संरक्षण हमी</h5>
+          <p class="mb-0 text-dark small" style="line-height: 1.6;">
+            आम्ही नागरिकांची कोणतीही संवेदनशील खाजगी माहिती (जसे की बँक खाती, आधार क्रमांक किंवा खाजगी कौटुंबिक कागदपत्रे) संकेतस्थळावर गोळा करत नाही. आम्ही केवळ नाव, ईमेल किंवा मोबाईल क्रमांक आणि संकेतशब्द (Password) लॉगिनसाठी गोळा करतो. संकेतशब्द अत्यंत सुरक्षित कूटबद्ध (Encrypted Hash) स्वरूपात साठवला जातो, जो प्रशासकांसह कोणालाही वाचता येत नाही.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h5 class="fw-bold text-dark mt-3">१. आम्ही कोणती माहिती गोळा करतो?</h5>
+    <ul class="text-secondary small" style="line-height: 1.7;">
+      <li><strong>खाते नोंदणी:</strong> नागरिक स्वतःहून नोंदणी करताना त्यांचे पूर्ण नाव, संपर्क क्रमांक/ईमेल आणि पासवर्ड देतात.</li>
+      <li><strong>नागरी तक्रारी:</strong> समस्येचे स्वरूप, ठिकाण आणि ऐच्छिक छायाचित्र.</li>
+      <li><strong>घर शोधक माहिती:</strong> सार्वजनिक घर शोधक यादीत केवळ ज्या कुटुंबांनी अधिकृत संमती (Listing Consent) दिली आहे, त्यांचीच नावे, घर क्रमांक आणि अक्षांश-रेखांश प्रदर्शित केले जातात.</li>
+    </ul>
+
+    <h5 class="fw-bold text-dark mt-3">२. माहितीचा वापर कसा केला जातो?</h5>
+    <p class="text-secondary small" style="line-height: 1.6;">
+      नागरिकांची माहिती केवळ ग्रामपंचायत सेवा पुरवणे, तक्रारींचे निवारण करणे आणि गावात येणाऱ्या पाहुण्यांना गुगल मॅप्सद्वारे योग्य पत्ता शोधण्यास मदत करण्यासाठी वापरली जाते. कोणत्याही व्यावसायिक हेतूसाठी किंवा तृतीय पक्षांना डेटा विकला जात नाही.
+    </p>
+
+    <h5 class="fw-bold text-dark mt-3">३. घर यादीतून नाव वगळणे किंवा दुरुस्ती</h5>
+    <p class="text-secondary small" style="line-height: 1.6;">
+      कोणत्याही रहिवाशास आपल्या घराचे नाव किंवा स्थान सार्वजनिक घर शोधक (Find a Home) सुविधेमधून काढायचे असल्यास किंवा त्यात दुरुस्ती करायची असल्यास ते थेट ग्रामपंचायत कार्यालयात लेखी अर्ज देऊन अथवा प्रशासक कक्षाकडे विनंती नोंदवून तात्काळ लिस्टिंग बंद करू शकतात.
+    </p>
+
+    <h5 class="fw-bold text-dark mt-3">४. सुरक्षा उपाय</h5>
+    <p class="text-secondary small" style="line-height: 1.6;">
+      सर्व पासवर्ड Werkzeug उद्योग-मानक हॅशिंग पद्धतीचा वापर करून सुरक्षित केले जातात. संवेदनशील डेटाबेस क्रेडेंशियल्स आणि एपीआय की सुरक्षित वातावरणात (Environment Variables) साठवल्या जातात.
+    </p>
+
+    <div class="mt-4 pt-3 border-top text-muted small">
+      संपर्क: ग्रामपंचायत कार्यालय, बेलखेड, ता. उमरखेड, जि. यवतमाळ - ४४५२०६.
+    </div>
+  </div>
+
+</div>
+{% endblock %}

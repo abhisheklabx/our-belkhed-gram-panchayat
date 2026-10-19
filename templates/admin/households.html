@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}घरे व्यवस्थापन | Household Management | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold text-success mb-0"><i class="bi bi-house-door-fill me-2"></i> ग्राम घरे व्यवस्थापन (Household Management)</h3>
+      <p class="text-muted small mb-0">गावातील नोंदणीकृत घरे, गुगल मॅप्स गुणक व गोपनीयता संमती नियंत्रण</p>
+    </div>
+    <div class="d-flex gap-2 mt-2 mt-md-0">
+      <a href="{{ url_for('admin.household_new') }}" class="btn btn-belkhed btn-sm rounded-pill px-3">
+        <i class="bi bi-plus-circle me-1"></i> नवीन घर जोडा (Add Household)
+      </a>
+      <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+        <i class="bi bi-arrow-left me-1"></i> Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- Search Filter -->
+  <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+    <form action="{{ url_for('admin.households') }}" method="GET" class="row g-2 align-items-center">
+      <div class="col-md-9">
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+          <input type="text" name="q" class="form-control" placeholder="कुटुंबप्रमुखाचे नाव, घर क्रमांक किंवा परिसर शोधा..." value="{{ search_q }}">
+        </div>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-belkhed btn-sm w-100 fw-bold">फिल्टर करा</button>
+        {% if search_q %}
+          <a href="{{ url_for('admin.households') }}" class="btn btn-light btn-sm border">साफ करा</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <!-- Households Table -->
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+        <thead class="table-light">
+          <tr>
+            <th>घर क्र.</th>
+            <th>कुटुंबप्रमुखाचे नाव</th>
+            <th>परिसर / खूण</th>
+            <th>अक्षांश, रेखांश (GPS)</th>
+            <th>संमती (Consent)</th>
+            <th>सार्वजनिक दृश्यता</th>
+            <th>पडताळणी कोड</th>
+            <th>कृती</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for h in households %}
+            <tr>
+              <td class="fw-bold">{{ h.house_number }}</td>
+              <td>
+                <div class="fw-bold text-dark">{{ h.full_name }}</div>
+                <small class="text-muted">{{ h.first_name }} | {{ h.middle_name }} | {{ h.last_name }}</small>
+              </td>
+              <td>
+                <div>{{ h.locality or '-' }}</div>
+                <small class="text-muted">{{ h.landmark or '' }}</small>
+              </td>
+              <td>
+                <code>{{ h.latitude }}, {{ h.longitude }}</code>
+                <a href="https://www.google.com/maps/search/?api=1&query={{ h.latitude }},{{ h.longitude }}" target="_blank" class="ms-1 text-success" title="मॅपवर पहा">
+                  <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+              </td>
+              <td>
+                {% if h.listing_consent %}
+                  <span class="badge bg-success-subtle text-success">संमती दिली</span>
+                {% else %}
+                  <span class="badge bg-danger-subtle text-danger">संमती नाही</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if h.public_visibility %}
+                  <span class="badge bg-primary-subtle text-primary">सार्वजनिक (Live)</span>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary">अदृश्य (Private)</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if h.membership_codes %}
+                  <code class="fw-bold">{{ h.membership_codes[0].code_display or 'BLK-CODE' }}</code>
+                {% else %}
+                  <span class="text-muted">-</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="d-flex gap-1">
+                  <a href="{{ url_for('admin.household_edit', hid=h.id) }}" class="btn btn-sm btn-outline-primary py-0 px-2" title="संपादित करा">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <form action="{{ url_for('admin.household_delete', hid=h.id) }}" method="POST" onsubmit="return confirm('नक्की या घराची सार्वजनिक दृश्यता बंद करायची आहे का?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" title="निष्क्रिय करा">
+                      <i class="bi bi-eye-slash"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">कोणतीही घर नोंद आढळली नाही.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

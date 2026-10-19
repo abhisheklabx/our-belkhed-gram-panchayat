@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}घर शोधा | Find a Home | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header Section -->
+  <div class="text-center mb-4">
+    <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill mb-2">
+      <i class="bi bi-geo-alt-fill me-1"></i> बेलखेड डिजिटल आवास मार्गदर्शक (Digital Home Finder)
+    </span>
+    <h2 class="fw-bold text-success">{{ t('search_home_title') }}</h2>
+    <p class="text-muted mx-auto" style="max-width: 680px;">
+      {{ t('search_home_sub') }}
+    </p>
+  </div>
+
+  <!-- Search Box Card -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 mx-auto" style="max-width: 760px; background: #ffffff;">
+    <form id="homeSearchForm" onsubmit="event.preventDefault(); performSearch();">
+      <div class="input-group input-group-lg mb-2">
+        <span class="input-group-text bg-white border-end-0 text-success">
+          <i class="bi bi-search"></i>
+        </span>
+        <input 
+          type="text" 
+          id="homeSearchInput" 
+          class="form-control border-start-0 border-end-0 ps-0 shadow-none" 
+          placeholder="{{ t('search_placeholder') }}" 
+          value="{{ initial_query }}"
+          autocomplete="off"
+          aria-label="Search household by resident name or house number"
+        >
+        <!-- Voice Typing Button -->
+        <button 
+          type="button" 
+          class="btn btn-light border border-start-0 border-end-0 text-muted" 
+          id="voiceTypeSearchBtn"
+          onclick="voiceTyping.toggle('homeSearchInput', this)" 
+          title="आवाजाने नाव सांगा (Voice Type)"
+        >
+          <i class="bi bi-mic fs-5"></i>
+        </button>
+        <!-- Clear Button -->
+        <button type="button" class="btn btn-light border border-start-0 text-muted" id="clearSearchBtn" onclick="clearSearch()" title="साफ करा (Clear)">
+          <i class="bi bi-x-circle fs-5"></i>
+        </button>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-belkhed px-4 fw-bold" id="searchSubmitBtn">
+          {{ t('btn_search') }}
+        </button>
+      </div>
+
+      <!-- Search Examples & Suggestions -->
+      <div class="d-flex flex-wrap align-items-center gap-2 mt-2 pt-1" style="font-size: 0.85rem;">
+        <span class="text-muted"><i class="bi bi-lightbulb me-1"></i> उदाहरणे (Try searching):</span>
+        <button type="button" class="btn btn-sm btn-light border rounded-pill py-0 px-2" onclick="setQuery('Ramesh Thakare')">Ramesh Thakare</button>
+        <button type="button" class="btn btn-sm btn-light border rounded-pill py-0 px-2" onclick="setQuery('Thakare')">Thakare (आडनाव)</button>
+        <button type="button" class="btn btn-sm btn-light border rounded-pill py-0 px-2" onclick="setQuery('BLK-01')">BLK-01</button>
+        <button type="button" class="btn btn-sm btn-light border rounded-pill py-0 px-2" onclick="setQuery('Jadhav')">Jadhav</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  <div id="searchLoading" class="text-center py-5 d-none">
+    <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="text-muted mt-2 fw-semibold">माहिती शोधत आहे... (Searching records...)</div>
+  </div>
+
+  <!-- Results Count Badge -->
+  <div id="resultsCountHeader" class="d-none mb-3 d-flex justify-content-between align-items-center">
+    <h5 class="fw-bold mb-0 text-dark">
+      <i class="bi bi-check2-circle text-success me-1"></i>
+      <span id="resultsCountNum">0</span> {{ t('search_results_found') }}
+    </h5>
+    <span class="badge bg-light text-muted border">सर्व गुणक पडताळणीकृत (Verified)</span>
+  </div>
+
+  <!-- Results Container -->
+  <div id="searchResultsGrid" class="row g-4"></div>
+
+  <!-- No Results Found State -->
+  <div id="noResultsAlert" class="card border-0 shadow-sm rounded-4 p-5 text-center d-none" style="background: #ffffff;">
+    <div class="text-muted mb-3">
+      <i class="bi bi-house-exclamation text-warning" style="font-size: 3.5rem;"></i>
+    </div>
+    <h5 class="fw-bold text-dark">{{ t('search_no_results') }}</h5>
+    <p class="text-muted small mx-auto" style="max-width: 500px;">
+      कृपया नावाची किंवा आडनावाची स्पेलिंग तपासा, किंवा फक्त आडनाव टाकून पुन्हा शोधा. जर आपले घर यादीत नोंदवायचे असेल तर ग्रामपंचायतीशी संपर्क साधा.
+    </p>
+    <div>
+      <a href="{{ url_for('public.contact') }}" class="btn btn-sm btn-outline-success rounded-pill px-3">
+        <i class="bi bi-telephone me-1"></i> ग्रामपंचायत मदत डेस्क
+      </a>
+    </div>
+  </div>
+
+  <!-- Privacy and Notice Footer -->
+  <div class="alert alert-light border mt-5 text-muted small d-flex align-items-center rounded-3">
+    <i class="bi bi-shield-lock-fill fs-4 text-success me-3"></i>
+    <div>
+      <strong>गोपनीयता सूचना:</strong> या शोध सुविधेमध्ये केवळ संबंधित कुटुंबप्रमुखाच्या संमतीने मंजूर केलेले सार्वजनिक तपशील आणि अचूक स्थान गुणक प्रदर्शित केले जातात. वैयक्तिक फोन नंबर किंवा ओळखपत्रे सार्वजनिक केली जात नाहीत.
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const searchInput = document.getElementById('homeSearchInput');
+const resultsGrid = document.getElementById('searchResultsGrid');
+const loadingEl = document.getElementById('searchLoading');
+const noResultsEl = document.getElementById('noResultsAlert');
+const resultsCountHeader = document.getElementById('resultsCountHeader');
+const resultsCountNum = document.getElementById('resultsCountNum');
+
+function setQuery(text) {
+  searchInput.value = text;
+  performSearch();
+}
+
+function clearSearch() {
+  searchInput.value = '';
+  resultsGrid.innerHTML = '';
+  resultsCountHeader.classList.add('d-none');
+  noResultsEl.classList.add('d-none');
+  searchInput.focus();
+}
+
+// Live debounce search
+let debounceTimer;
+searchInput.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  const q = searchInput.value.trim();
+  if (q.length >= 2) {
+    debounceTimer = setTimeout(() => {
+      performSearch();
+    }, 350);
+  } else if (q.length === 0) {
+    clearSearch();
+  }
+});
+
+async function performSearch() {
+  const query = searchInput.value.trim();
+  if (!query) return;
+
+  loadingEl.classList.remove('d-none');
+  noResultsEl.classList.add('d-none');
+  resultsGrid.innerHTML = '';
+  resultsCountHeader.classList.add('d-none');
+
+  try {
+    const res = await fetch(`/api/households/search?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    loadingEl.classList.add('d-none');
+
+    if (!data.results || data.results.length === 0) {
+      noResultsEl.classList.remove('d-none');
+      return;
+    }
+
+    resultsCountNum.textContent = data.count;
+    resultsCountHeader.classList.remove('d-none');
+
+    data.results.forEach(h => {
+      const col = document.createElement('div');
+      col.className = 'col-lg-4 col-md-6';
+      col.innerHTML = `
+        <div class="house-card h-100 d-flex flex-column">
+          <img src="${h.image_path || '/static/images/house_placeholder.jpg'}" alt="${h.full_name}" class="house-card-img" onerror="this.src='/static/images/house_placeholder.jpg'">
+          <div class="house-card-body d-flex flex-column flex-grow-1">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="house-number-badge">
+                <i class="bi bi-door-open me-1"></i> ${h.house_number}
+              </span>
+              <span class="badge bg-success-subtle text-success small">
+                <i class="bi bi-patch-check-fill me-1"></i> नोंदणीकृत
+              </span>
+            </div>
+
+            <h5 class="fw-bold text-dark mb-1">${h.full_name}</h5>
+            
+            <p class="text-muted small mb-2">
+              <i class="bi bi-geo-alt text-danger me-1"></i> ${h.locality || 'बेलखेड गावठाण'}
+              ${h.landmark ? `<br><span class="text-secondary ms-3"><i class="bi bi-signpost-2 me-1"></i> खूण: ${h.landmark}</span>` : ''}
+            </p>
+
+            <div class="p-2 bg-light rounded text-muted mb-3" style="font-size: 0.78rem;">
+              <i class="bi bi-compass me-1"></i> अक्षांश, रेखांश: ${h.latitude}, ${h.longitude}
+            </div>
+
+            <div class="mt-auto d-flex flex-column gap-2">
+              <!-- Primary Google Maps Search button -->
+              <a href="${h.maps_url}" target="_blank" rel="noopener noreferrer" class="btn btn-belkhed btn-sm w-100 fw-bold">
+                <i class="bi bi-geo-alt-fill me-1"></i> View Location in Google Maps
+              </a>
+              <!-- Turn by Turn directions with GPS confirmation -->
+              <button type="button" class="btn btn-belkhed-outline btn-sm w-100 fw-semibold" onclick="openGoogleDirections(${h.latitude}, ${h.longitude})">
+                <i class="bi bi-sign-turn-right-fill me-1"></i> Get Directions (मार्गदर्शन)
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      resultsGrid.appendChild(col);
+    });
+
+  } catch(err) {
+    loadingEl.classList.add('d-none');
+    console.error("Household search error:", err);
+    alert("माहिती शोधताना नेटवर्क त्रुटी आली. कृपया पुन्हा प्रयत्न करा.");
+  }
+}
+
+// Auto-run if query param passed
+if (searchInput.value.trim()) {
+  performSearch();
+}
+</script>
+{% endblock %}

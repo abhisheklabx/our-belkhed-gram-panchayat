@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}गाव जीआयएस नकाशा | GIS Map | {{ t('site_title') }}{% endblock %}
+
+{% block extra_head %}
+<style>
+.gis-sidebar {
+  background: #ffffff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+.gis-layer-item {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  margin-bottom: 0.5rem;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div>
+      <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-1">
+        <i class="bi bi-layers-half me-1"></i> डिजिटल भौगोलिक माहिती प्रणाली (GIS Portal)
+      </span>
+      <h3 class="fw-bold text-success mb-0">बेलखेड गाव जीआयएस नकाशा (Belkhed GIS Map)</h3>
+      <p class="text-muted small mb-0">महसूल गाव सीमा (७४५.३१ हेक्टर), गावठाण व सार्वजनिक सुविधा स्तर</p>
+    </div>
+    <div class="d-flex gap-2 mt-2 mt-md-0">
+      <button class="btn btn-sm btn-belkhed-outline rounded-pill" onclick="openGoogleDirections(19.616556, 77.636556)">
+        <i class="bi bi-sign-turn-right-fill me-1"></i> Google Directions
+      </button>
+      <a href="https://www.google.com/maps/search/?api=1&query=19.616556,77.636556" target="_blank" class="btn btn-sm btn-belkhed rounded-pill">
+        <i class="bi bi-google me-1"></i> Google Maps वर उघडा
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <!-- Map Container -->
+    <div class="col-lg-9">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div id="gisMapFull" style="height: 600px; width: 100%;"></div>
+      </div>
+    </div>
+
+    <!-- GIS Info & Layers Sidebar -->
+    <div class="col-lg-3">
+      <div class="gis-sidebar h-100 d-flex flex-column">
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-sliders me-1"></i> नकाशा स्तर व खुणा (Layers)</h5>
+
+        <div class="gis-layer-item">
+          <div class="d-flex align-items-center">
+            <span class="legend-dot" style="background-color: #1b5e20;"></span>
+            <span>गाव महसूल सीमा (Boundary)</span>
+          </div>
+          <span class="badge bg-light text-muted border">745.31 Ha</span>
+        </div>
+
+        <div class="gis-layer-item">
+          <div class="d-flex align-items-center">
+            <span class="legend-dot" style="background-color: #ff7043;"></span>
+            <span>गावठाण व वस्ती (Gaothan)</span>
+          </div>
+          <span class="badge bg-light text-muted border">आवास</span>
+        </div>
+
+        <div class="gis-layer-item">
+          <div class="d-flex align-items-center">
+            <span class="legend-dot" style="background-color: #0288d1;"></span>
+            <span>पाण्याची टाकी (Water Supply)</span>
+          </div>
+          <i class="bi bi-droplet-fill text-info"></i>
+        </div>
+
+        <div class="gis-layer-item">
+          <div class="d-flex align-items-center">
+            <span class="legend-dot" style="background-color: #6a1b9a;"></span>
+            <span>जि. प. प्राथमिक शाळा</span>
+          </div>
+          <i class="bi bi-book-fill text-purple"></i>
+        </div>
+
+        <div class="gis-layer-item">
+          <div class="d-flex align-items-center">
+            <span class="legend-dot" style="background-color: #c62828;"></span>
+            <span>आरोग्य उपकेंद्र (PHC)</span>
+          </div>
+          <i class="bi bi-hospital-fill text-danger"></i>
+        </div>
+
+        <div class="gis-layer-item">
+          <div class="d-flex align-items-center">
+            <span class="legend-dot" style="background-color: #2e7d32;"></span>
+            <span>नोंदणीकृत घर (Household)</span>
+          </div>
+          <i class="bi bi-house-door-fill text-success"></i>
+        </div>
+
+        <hr class="my-3">
+
+        <h6 class="fw-bold text-secondary mb-2"><i class="bi bi-info-circle me-1"></i> भौगोलिक तपशील</h6>
+        <div class="bg-light p-2 rounded text-muted mb-3" style="font-size: 0.82rem; line-height: 1.6;">
+          <strong>अक्षांश:</strong> 19.616556° N<br>
+          <strong>रेखांश:</strong> 77.636556° E<br>
+          <strong>तालुका:</strong> उमरखेड (९ किमी)<br>
+          <strong>जिल्हा:</strong> यवतमाळ (१२० किमी)<br>
+          <strong>पिन कोड:</strong> ४४५२०६
+        </div>
+
+        <div class="alert alert-warning p-2 small mb-0 rounded-3" style="font-size: 0.78rem;">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i> <strong>टीप:</strong> प्रदर्शित सीमा रेखांकन हे डिजिटल प्रात्यक्षिकासाठी तयार केलेले असून ते प्रत्यक्ष मोजणी किंवा न्यायालयीन पुराव्यासाठी वापरले जाऊ नये.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  const mapCenter = [19.616556, 77.636556];
+  const map = L.map('gisMapFull').setView(mapCenter, 15);
+
+  // Basemap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors | Our Belkhed GIS'
+  }).addTo(map);
+
+  // Fetch GeoJSON data from backend API
+  try {
+    const res = await fetch('/api/gis/data');
+    const geojsonData = await res.json();
+
+    L.geoJSON(geojsonData, {
+      style: function(feature) {
+        if (feature.properties.layer === 'boundary') {
+          return {
+            color: feature.properties.stroke || '#1b5e20',
+            weight: feature.properties.stroke_width || 3,
+            fillColor: feature.properties.fill || '#4caf50',
+            fillOpacity: feature.properties.fill_opacity || 0.12,
+            dashArray: '4, 4'
+          };
+        }
+        if (feature.properties.layer === 'residential') {
+          return {
+            color: feature.properties.stroke || '#d84315',
+            weight: feature.properties.stroke_width || 2,
+            fillColor: feature.properties.fill || '#ff7043',
+            fillOpacity: feature.properties.fill_opacity || 0.25
+          };
+        }
+        if (feature.properties.layer === 'infrastructure') {
+          return {
+            color: feature.properties.color || '#e65100',
+            weight: feature.properties.weight || 4
+          };
+        }
+        return {};
+      },
+      pointToLayer: function(feature, latlng) {
+        const color = feature.properties.color || '#1b5e20';
+        let iconHtml = '<i class="bi bi-geo-alt-fill"></i>';
+        if (feature.properties.icon === 'building') iconHtml = '<i class="bi bi-bank2"></i>';
+        if (feature.properties.icon === 'water') iconHtml = '<i class="bi bi-droplet-fill"></i>';
+        if (feature.properties.icon === 'graduation-cap') iconHtml = '<i class="bi bi-book-fill"></i>';
+        if (feature.properties.icon === 'medkit') iconHtml = '<i class="bi bi-hospital-fill"></i>';
+        if (feature.properties.icon === 'home') iconHtml = '<i class="bi bi-house-door-fill"></i>';
+
+        const customIcon = L.divIcon({
+          className: 'gis-pin-icon',
+          html: `<div style="background-color: ${color}; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.35); font-size: 15px;">${iconHtml}</div>`,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
+        });
+        return L.marker(latlng, { icon: customIcon });
+      },
+      onEachFeature: function(feature, layer) {
+        const p = feature.properties;
+        let content = `<div style="font-family: inherit; font-size: 13px; min-width: 180px;">
+          <strong style="color: #1b5e20; font-size: 14px;">${p.name_mr || p.name}</strong><br>
+          <span class="badge bg-light text-dark border my-1">${p.category || 'Belkhed GIS'}</span><br>
+          ${p.description ? `<p style="font-size: 11px; margin: 4px 0; color: #555;">${p.description}</p>` : ''}
+          ${feature.geometry.type === 'Point' ? `
+            <hr style="margin: 6px 0;">
+            <a href="https://www.google.com/maps/search/?api=1&query=${feature.geometry.coordinates[1]},${feature.geometry.coordinates[0]}" target="_blank" class="btn btn-sm btn-success text-white py-1 px-2" style="font-size: 11px;">
+              Google Maps नेव्हिगेट करा
+            </a>
+          ` : ''}
+        </div>`;
+        layer.bindPopup(content);
+      }
+    }).addTo(map);
+
+  } catch(e) {
+    console.error("GIS GeoJSON load error:", e);
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}ग्रामसभा व सूचना | Notices | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="mb-4">
+    <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 rounded-pill mb-2">
+      <i class="bi bi-megaphone-fill me-1"></i> अधिकृत सूचना फलक
+    </span>
+    <h2 class="fw-bold text-success">{{ t('nav_notices') }}</h2>
+    <p class="text-muted">बेलखेड ग्रामपंचायत जाहीर प्रकटन, ग्रामसभा अजेंडा, आरोग्य शिबीर व महत्त्वाच्या जनसूचना.</p>
+  </div>
+
+  <div class="row g-4">
+    {% for notice in announcements %}
+      <div class="col-lg-6">
+        <div class="civic-card p-4 h-100 d-flex flex-column {% if notice.is_important %}border-danger border-2{% endif %}">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              {% if notice.is_important %}
+                <span class="badge bg-danger me-1"><i class="bi bi-exclamation-circle-fill me-1"></i> तातडीचे / महत्त्वाचे</span>
+              {% else %}
+                <span class="badge bg-secondary-subtle text-secondary">सर्वसाधारण सूचना</span>
+              {% endif %}
+              <span class="badge bg-light text-muted border text-uppercase">{{ notice.language }}</span>
+            </div>
+            <span class="text-muted small">
+              <i class="bi bi-calendar3 me-1"></i> {{ notice.published_date.strftime('%d %b %Y') if notice.published_date else '' }}
+            </span>
+          </div>
+
+          <h5 class="fw-bold text-dark mt-2 mb-2">{{ notice.title }}</h5>
+          <p class="text-secondary small mb-3 flex-grow-1" style="line-height: 1.6;">
+            {{ notice.content }}
+          </p>
+
+          <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+            <span class="text-muted small">ग्रामपंचायत बेलखेड कार्यालय</span>
+            <button class="btn btn-sm btn-outline-success rounded-pill" onclick="window.print()">
+              <i class="bi bi-printer me-1"></i> प्रिंट / सेव्ह
+            </button>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12">
+        <div class="alert alert-light border text-center p-5">
+          <i class="bi bi-bell-slash fs-3 text-muted d-block mb-2"></i>
+          सध्या कोणतीही जाहीर सूचना प्रकाशित केलेली नाही.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Hero Welcome Card -->
+  <div class="hero-card">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <span class="badge bg-light text-success fw-bold px-3 py-2 rounded-pill mb-3">
+          <i class="bi bi-geo-alt-fill me-1"></i> ता. उमरखेड | जि. यवतमाळ
+        </span>
+        <h1 class="display-6 fw-bold mb-2">{{ t('home_welcome_title') }}</h1>
+        <p class="lead mb-4 opacity-90" style="font-size: 1.1rem;">
+          {{ t('home_welcome_sub') }} — नागरिकांसाठी पारदर्शक, गतिमान व डिजिटल ग्रामपंचायत सुविधा.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{{ url_for('public.find_home') }}" class="btn btn-warning fw-bold px-4 py-2 rounded-pill shadow-sm">
+            <i class="bi bi-search me-1"></i> {{ t('nav_find_home') }}
+          </a>
+          <a href="{{ url_for('public.complaint_new') }}" class="btn btn-outline-light px-4 py-2 rounded-pill">
+            <i class="bi bi-exclamation-circle me-1"></i> तक्रार नोंदणी करा
+          </a>
+          <a href="{{ url_for('public.gis_map') }}" class="btn btn-outline-light px-3 py-2 rounded-pill">
+            <i class="bi bi-map me-1"></i> {{ t('nav_gis_map') }}
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center d-none d-lg-block">
+        <img src="{{ url_for('static', filename='images/belkhed_logo.png') }}" alt="Aaple Belkhed Logo" class="img-fluid rounded-circle shadow-lg" style="max-height: 200px; border: 4px solid rgba(255,255,255,0.4);">
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Statistics Banner (2011 Census Labelled) -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="civic-card text-center py-3">
+        <div class="text-muted small fw-semibold">{{ t('home_stat_pop') }}</div>
+        <div class="display-6 fw-bold text-success">{{ stats.population }}</div>
+        <div class="text-muted" style="font-size: 0.75rem;">(पुरुष: १,११८ | स्त्रिया: १,१४४)</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="civic-card text-center py-3">
+        <div class="text-muted small fw-semibold">{{ t('home_stat_households') }}</div>
+        <div class="display-6 fw-bold text-success">{{ stats.households }}</div>
+        <div class="text-muted" style="font-size: 0.75rem;">नोंदणीकृत कुटुंबे</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="civic-card text-center py-3">
+        <div class="text-muted small fw-semibold">{{ t('home_stat_literacy') }}</div>
+        <div class="display-6 fw-bold text-success">{{ stats.literacy }}</div>
+        <div class="text-muted" style="font-size: 0.75rem;">उच्च साक्षरता प्रमाण</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="civic-card text-center py-3">
+        <div class="text-muted small fw-semibold">{{ t('home_stat_area') }}</div>
+        <div class="display-6 fw-bold text-success">{{ stats.area }}</div>
+        <div class="text-muted" style="font-size: 0.75rem;">महसूल गाव क्षेत्रफळ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Action Navigation Cards -->
+  <h4 class="fw-bold text-success mb-3"><i class="bi bi-grid-fill me-2"></i> ग्रामपंचायत मुख्य सेवा</h4>
+  <div class="row g-3 mb-5">
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card">
+        <div class="civic-card-icon"><i class="bi bi-search"></i></div>
+        <h5 class="fw-bold mb-1">{{ t('nav_find_home') }}</h5>
+        <p class="text-muted small mb-3">नावावरून किंवा घर क्रमांकावरून गावातील घर शोधा व थेट गुगल मॅप्स द्वारे नेव्हिगेशन मिळवा.</p>
+        <a href="{{ url_for('public.find_home') }}" class="btn btn-sm btn-outline-success rounded-pill fw-semibold">घर शोधा <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card">
+        <div class="civic-card-icon"><i class="bi bi-map"></i></div>
+        <h5 class="fw-bold mb-1">{{ t('nav_gis_map') }}</h5>
+        <p class="text-muted small mb-3">बेलखेड गावची महसूल सीमा, गावठाण, शाळा, पाण्याची टाकी व प्रमुख खुणांचा डिजिटल नकाशा.</p>
+        <a href="{{ url_for('public.gis_map') }}" class="btn btn-sm btn-outline-success rounded-pill fw-semibold">नकाशा उघडा <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card">
+        <div class="civic-card-icon"><i class="bi bi-exclamation-diamond"></i></div>
+        <h5 class="fw-bold mb-1">तक्रार नोंदणी</h5>
+        <p class="text-muted small mb-3">पाणी, रस्ते, सांडपाणी, वीज समस्यांची थेट फोटो व आवाजाने तक्रार नोंदवा आणि स्थिती तपासा.</p>
+        <div class="d-flex gap-2">
+          <a href="{{ url_for('public.complaint_new') }}" class="btn btn-sm btn-success rounded-pill fw-semibold">नोंदवा</a>
+          <a href="{{ url_for('public.complaint_track') }}" class="btn btn-sm btn-outline-secondary rounded-pill">ट्रॅक करा</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="civic-card">
+        <div class="civic-card-icon"><i class="bi bi-journal-bookmark"></i></div>
+        <h5 class="fw-bold mb-1">{{ t('nav_schemes') }}</h5>
+        <p class="text-muted small mb-3">पंतप्रधान आवास, जल जीवन, नरेगा, शेतकरी योजनांची पात्रता व आवश्यक कागदपत्रे सूची.</p>
+        <a href="{{ url_for('public.schemes') }}" class="btn btn-sm btn-outline-success rounded-pill fw-semibold">योजना पहा <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Village Overview Map Section -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-5" style="background: #ffffff;">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+      <div>
+        <h4 class="fw-bold text-success mb-1"><i class="bi bi-pin-map-fill me-2"></i> बेलखेड गाव नकाशा दर्शन</h4>
+        <p class="text-muted small mb-0">केंद्र बिंदू: १९°३६'५९.६" उत्तर, ७७°३८'११.६" पूर्व (Latitude: 19.616556, Longitude: 77.636556)</p>
+      </div>
+      <div class="d-flex gap-2 mt-2 mt-md-0">
+        <button class="btn btn-sm btn-belkhed-outline rounded-pill" onclick="openGoogleDirections(19.616556, 77.636556)">
+          <i class="bi bi-google me-1"></i> Google Maps वर उघडा
+        </button>
+        <a href="{{ url_for('public.gis_map') }}" class="btn btn-sm btn-belkhed rounded-pill">
+          <i class="bi bi-layers-fill me-1"></i> संपूर्ण GIS स्तर पहा
+        </a>
+      </div>
+    </div>
+    <div id="homeVillageMap" class="map-container" style="height: 380px;"></div>
+  </div>
+
+  <!-- Latest Announcements & Emergency Shortcuts -->
+  <div class="row g-4 mb-5">
+    <!-- Announcements -->
+    <div class="col-lg-7">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold text-success mb-0"><i class="bi bi-bell-fill me-2"></i> ताज्या सूचना व ग्रामसभा</h4>
+        <a href="{{ url_for('public.notices') }}" class="small text-success fw-bold text-decoration-none">सर्व सूचना पहा <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="d-flex flex-column gap-3">
+        {% for notice in notices %}
+          <div class="civic-card p-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <h6 class="fw-bold mb-1 text-dark">
+                {% if notice.is_important %}
+                  <span class="badge bg-danger me-1">महत्त्वाचे</span>
+                {% endif %}
+                {{ notice.title }}
+              </h6>
+              <span class="text-muted small" style="white-space: nowrap;">{{ notice.published_date.strftime('%d %b %Y') if notice.published_date else '' }}</span>
+            </div>
+            <p class="text-muted small mb-0 mt-1">{{ notice.content[:140] }}...</p>
+          </div>
+        {% else %}
+          <div class="alert alert-light border">कोणत्याही नवीन सूचना उपलब्ध नाहीत.</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Emergency Shortcuts & Office Hours -->
+    <div class="col-lg-5">
+      <div class="civic-card p-4 h-100">
+        <h5 class="fw-bold text-danger mb-3"><i class="bi bi-telephone-inbound-fill me-2"></i> तत्काळ संपर्क व हेल्पलाईन</h5>
+        
+        <div class="list-group list-group-flush mb-4">
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">अ‍ॅम्ब्युलन्स / रुग्णवाहिका</div>
+              <div class="small text-muted">आपत्कालीन वैद्यकीय सेवा</div>
+            </div>
+            <a href="tel:108" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-3">१०८</a>
+          </div>
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">पोलीस नियंत्रण कक्ष</div>
+              <div class="small text-muted">उमरखेड पोलीस ठाणे</div>
+            </div>
+            <a href="tel:112" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3">११२</a>
+          </div>
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">महावितरण (वीज तक्रार)</div>
+              <div class="small text-muted">२४x७ वीज हेल्पलाईन</div>
+            </div>
+            <a href="tel:1912" class="btn btn-sm btn-outline-warning text-dark fw-bold rounded-pill px-3">१९१२</a>
+          </div>
+          <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold">ग्रामपंचायत कार्यालय डेस्क</div>
+              <div class="small text-muted">ग्रामसेवक / कार्यालय कक्ष</div>
+            </div>
+            <span class="badge bg-light text-dark border">कामाचे दिवस</span>
+          </div>
+        </div>
+
+        <div class="p-3 bg-light rounded-3 text-muted small">
+          <i class="bi bi-clock-history me-1"></i> कार्यालयीन वेळ: सकाळी १०:०० ते सायंकाळी ०५:३० (रविवार व शासकीय सुट्टी वगळून)
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const mapEl = document.getElementById('homeVillageMap');
+  if (!mapEl) return;
+
+  const villageLat = 19.616556;
+  const villageLng = 77.636556;
+
+  try {
+    const map = L.map('homeVillageMap', { scrollWheelZoom: false }).setView([villageLat, villageLng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Village center marker
+    const villageIcon = L.divIcon({
+      className: 'custom-map-icon',
+      html: '<div style="background-color: #1b5e20; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"><i class="bi bi-bank2" style="font-size: 18px;"></i></div>',
+      iconSize: [36, 36],
+      iconAnchor: [18, 18]
+    });
+
+    const marker = L.marker([villageLat, villageLng], { icon: villageIcon }).addTo(map);
+    marker.bindPopup(`
+      <div style="font-family: inherit; font-size: 13px;">
+        <strong style="color: #1b5e20; font-size: 14px;">बेलखेड ग्रामपंचायत (Belkhed Village)</strong><br>
+        ता. उमरखेड, जि. यवतमाळ - ४४५२०६<br>
+        अक्षांश: 19.616556, रेखांश: 77.636556<br>
+        <hr style="margin: 6px 0;">
+        <a href="https://www.google.com/maps/search/?api=1&query=${villageLat},${villageLng}" target="_blank" class="btn btn-sm btn-success text-white py-1 px-2" style="font-size: 11px;">
+          Google Maps वर उघडा
+        </a>
+      </div>
+    `).openPopup();
+
+  } catch(e) {
+    console.warn("Leaflet map initialization warning:", e);
+    mapEl.innerHTML = '<div class="alert alert-info m-3">नकाशा लोड होत आहे किंवा ऑफलाइन मोड सुरू आहे.</div>';
+  }
+});
+</script>
+{% endblock %}

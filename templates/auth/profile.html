@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}माझे प्रोफाइल | Profile | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="row g-4">
+    <!-- Profile Info Card -->
+    <div class="col-lg-4">
+      <div class="civic-card p-4 text-center">
+        <div class="mx-auto mb-3" style="width: 80px; height: 80px; border-radius: 50%; background: #e8f5e9; color: #1b5e20; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <h4 class="fw-bold text-dark mb-1">{{ current_user.name }}</h4>
+        <p class="text-muted small mb-2">{{ current_user.email_or_phone }}</p>
+        
+        <div class="mb-3">
+          {% if current_user.role == 'admin' %}
+            <span class="badge bg-danger fs-6 px-3 py-1"><i class="bi bi-shield-shaded me-1"></i> मुख्य प्रशासक (Admin)</span>
+          {% elif current_user.role == 'resident' %}
+            <span class="badge bg-success fs-6 px-3 py-1"><i class="bi bi-patch-check-fill me-1"></i> प्रमाणित रहिवासी (Resident)</span>
+          {% else %}
+            <span class="badge bg-secondary fs-6 px-3 py-1"><i class="bi bi-person me-1"></i> अभ्यागत नागरिक (Visitor)</span>
+          {% endif %}
+        </div>
+
+        <hr>
+
+        <form action="{{ url_for('auth.profile') }}" method="POST" class="text-start">
+          <input type="hidden" name="action" value="update_profile">
+          <div class="mb-3">
+            <label class="form-label small fw-bold">पूर्ण नाव</label>
+            <input type="text" name="name" class="form-control form-control-sm" value="{{ current_user.name }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold">पसंतीची भाषा</label>
+            <select name="preferred_language" class="form-select form-select-sm">
+              <option value="mr" {% if current_user.preferred_language == 'mr' %}selected{% endif %}>मराठी</option>
+              <option value="hi" {% if current_user.preferred_language == 'hi' %}selected{% endif %}>हिंदी</option>
+              <option value="en" {% if current_user.preferred_language == 'en' %}selected{% endif %}>English</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-belkhed btn-sm w-100 fw-bold">बदल सेव्ह करा</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Verification & Grievances -->
+    <div class="col-lg-8">
+      
+      <!-- Household Verification Code Redemption -->
+      <div class="civic-card p-4 mb-4">
+        <h5 class="fw-bold text-success mb-2">
+          <i class="bi bi-house-check-fill me-1"></i> गाव रहिवासी ओळख पडताळणी (Resident Verification)
+        </h5>
+        <p class="text-muted small">
+          जर आपल्याला ग्रामपंचायत कार्यालयाकडून कुटुंबाचा पडताळणी कोड मिळाला असेल (उदा. <strong>BLK-8491</strong>), तर तो येथे टाकून आपले खाते प्रमाणित स्थानिक रहिवासी करा.
+        </p>
+
+        {% if current_user.role == 'resident' %}
+          <div class="alert alert-success border-success d-flex align-items-center mb-0">
+            <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
+            <div>
+              <strong>आपले खाते प्रमाणित रहिवासी म्हणून सत्यापित आहे!</strong><br>
+              <small>आपणास ग्रामपंचायतीच्या अंतर्गत सेवा व योजनांचे अग्रक्रम अधिकार प्राप्त आहेत.</small>
+            </div>
+          </div>
+        {% else %}
+          <form action="{{ url_for('auth.profile') }}" method="POST" class="row g-2 align-items-center">
+            <input type="hidden" name="action" value="verify_code">
+            <div class="col-sm-8">
+              <input type="text" name="household_code" class="form-control text-uppercase" placeholder="कुटुंब कोड टाका (उदा. BLK-8491)" required>
+            </div>
+            <div class="col-sm-4">
+              <button type="submit" class="btn btn-belkhed w-100 fw-bold">
+                <i class="bi bi-shield-check me-1"></i> प्रमाणित करा
+              </button>
+            </div>
+          </form>
+        {% endif %}
+      </div>
+
+      <!-- My Grievances History -->
+      <div class="civic-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-dark mb-0"><i class="bi bi-ticket-perforated me-1"></i> माझ्या तक्रारी (My Grievances)</h5>
+          <a href="{{ url_for('public.complaint_new') }}" class="btn btn-sm btn-outline-success rounded-pill">
+            <i class="bi bi-plus-circle me-1"></i> नवीन तक्रार
+          </a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+            <thead class="table-light">
+              <tr>
+                <th>तक्रार क्रमांक</th>
+                <th>प्रकार</th>
+                <th>स्थिती</th>
+                <th>तारीख</th>
+                <th>कृती</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in complaints %}
+                <tr>
+                  <td class="fw-bold">{{ c.complaint_number }}</td>
+                  <td class="text-capitalize">{{ c.category }}</td>
+                  <td>
+                    {% if c.status == 'submitted' %}
+                      <span class="badge bg-secondary">प्राप्त</span>
+                    {% elif c.status == 'in_progress' %}
+                      <span class="badge bg-warning text-dark">प्रगतीपथावर</span>
+                    {% elif c.status == 'resolved' %}
+                      <span class="badge bg-success">निवारण झाले</span>
+                    {% else %}
+                      <span class="badge bg-danger">{{ c.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-muted">{{ c.created_at.strftime('%d %b %Y') if c.created_at else '' }}</td>
+                  <td>
+                    <a href="{{ url_for('public.complaint_track', cid=c.complaint_number) }}" class="btn btn-sm btn-light border py-0 px-2">पहा</a>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">कोणतीही तक्रार नोंदवलेली नाही.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

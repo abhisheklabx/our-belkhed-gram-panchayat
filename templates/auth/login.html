@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}लॉगिन | Login | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mx-auto" style="max-width: 480px; background: #ffffff;">
+    
+    <div class="text-center mb-4">
+      <img src="{{ url_for('static', filename='images/belkhed_logo.png') }}" alt="Belkhed Logo" class="brand-logo mb-2" style="height: 65px; width: 65px;">
+      <h3 class="fw-bold text-success mb-1">{{ t('auth_login_title') }}</h3>
+      <p class="text-muted small">नागरिक, रहिवासी व प्रशासक प्रवेश</p>
+    </div>
+
+    <form action="{{ url_for('auth.login') }}" method="POST">
+      
+      <!-- Email or Mobile -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">ईमेल किंवा मोबाईल क्रमांक</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light text-muted"><i class="bi bi-person"></i></span>
+          <input type="text" name="email_or_phone" class="form-control" placeholder="उदा. 9876543210 किंवा abhishek@belkhed.gov.in" required>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <label class="form-label fw-bold mb-0">संकेतशब्द (Password)</label>
+          <a href="{{ url_for('public.contact') }}" class="small text-muted text-decoration-none">मदत हवी आहे?</a>
+        </div>
+        <div class="input-group">
+          <span class="input-group-text bg-light text-muted"><i class="bi bi-key"></i></span>
+          <input type="password" name="password" class="form-control" placeholder="आपला पासवर्ड प्रविष्ट करा" required>
+        </div>
+      </div>
+
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-belkhed btn-lg fw-bold">
+          <i class="bi bi-box-arrow-in-right me-1"></i> लॉगिन करा (Login)
+        </button>
+      </div>
+
+      <div class="text-center text-muted small mb-3">
+        नवीन नागरिक आहात का? 
+        <a href="{{ url_for('auth.register') }}" class="text-success fw-bold text-decoration-none">येथे नवीन खाते तयार करा</a>
+      </div>
+
+      <div class="p-3 bg-light rounded-3 text-muted small text-start">
+        <i class="bi bi-shield-check text-success me-1"></i> <strong>सुरक्षित प्रणाली:</strong> पासवर्ड एनक्रिप्टेड पद्धतीने साठवले जातात. अधिकृत प्रशासक क्रेडेंशियल्सद्वारे प्रशासक कक्षात थेट प्रवेश मिळेल.
+      </div>
+
+    </form>
+  </div>
+
+</div>
+{% endblock %}

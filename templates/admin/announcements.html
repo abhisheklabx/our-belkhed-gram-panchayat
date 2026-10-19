@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}सूचना फलक व्यवस्थापन | Announcements | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold text-success mb-0"><i class="bi bi-megaphone-fill me-2"></i> ग्रामसूचना व जाहीर प्रकटन (Announcements)</h3>
+      <p class="text-muted small mb-0">ग्रामसभा अजेंडा, आरोग्य शिबीर व अधिकृत नोटीस व्यवस्थापन</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="bi bi-arrow-left me-1"></i> Dashboard
+    </a>
+  </div>
+
+  <div class="row g-4">
+    <!-- Form -->
+    <div class="col-lg-5">
+      <div class="civic-card p-4">
+        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">नवीन सूचना प्रकाशित करा</h5>
+
+        <form action="{{ url_for('admin.announcements') }}" method="POST">
+          <div class="mb-3">
+            <label class="form-label small fw-bold">सूचनेचे शीर्षक (Title) <span class="text-danger">*</span></label>
+            <input type="text" name="title" class="form-control" placeholder="उदा. विशेष ग्रामसभा बैठक सूचना" required>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small fw-bold">भाषा</label>
+              <select name="language" class="form-select form-select-sm">
+                <option value="mr" selected>मराठी</option>
+                <option value="hi">हिंदी</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">स्थिती</label>
+              <select name="publication_status" class="form-select form-select-sm">
+                <option value="published" selected>प्रसिद्ध करा (Published)</option>
+                <option value="draft">मसुदा (Draft)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">सूचनेचा सविस्तर मजकूर (Content) <span class="text-danger">*</span></label>
+            <textarea name="content" rows="5" class="form-control" placeholder="येथे संपूर्ण मजकूर लिहा..." required></textarea>
+          </div>
+
+          <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" name="is_important" id="impNotice">
+            <label class="form-check-label small fw-semibold text-danger" for="impNotice">
+              <i class="bi bi-exclamation-circle-fill me-1"></i> महत्त्वाचे / तातडीचे म्हणून चिन्हांकित करा
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-belkhed w-100 fw-bold">
+            <i class="bi bi-send-fill me-1"></i> सूचना प्रसिद्ध करा
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Existing Notices -->
+    <div class="col-lg-7">
+      <div class="civic-card p-4">
+        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">प्रसिद्ध केलेल्या सूचना</h5>
+
+        <div class="d-flex flex-column gap-3">
+          {% for a in announcements %}
+            <div class="p-3 bg-light rounded border-start border-4 {% if a.is_important %}border-danger{% else %}border-success{% endif %}">
+              <div class="d-flex justify-content-between align-items-start">
+                <h6 class="fw-bold text-dark mb-1">
+                  {% if a.is_important %}
+                    <span class="badge bg-danger me-1">महत्त्वाचे</span>
+                  {% endif %}
+                  {{ a.title }}
+                </h6>
+                <span class="badge bg-white text-muted border text-uppercase">{{ a.language }}</span>
+              </div>
+              <p class="text-secondary small mb-2">{{ a.content }}</p>
+              <div class="small text-muted d-flex justify-content-between">
+                <span>प्रकाशन: {{ a.published_date.strftime('%d %b %Y') if a.published_date else '' }}</span>
+                <span class="badge bg-success-subtle text-success">{{ a.publication_status }}</span>
+              </div>
+            </div>
+          {% else %}
+            <div class="text-muted small">कोणतीही सूचना उपलब्ध नाही.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}तक्रार निवारण कृती | Complaint #{{ complaint.complaint_number }} | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold text-success mb-0">तक्रार तपशील: {{ complaint.complaint_number }}</h3>
+      <p class="text-muted small mb-0">नोंदणी तारीख: {{ complaint.created_at.strftime('%d %B %Y, %I:%M %p') if complaint.created_at else '' }}</p>
+    </div>
+    <a href="{{ url_for('admin.complaints') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="bi bi-arrow-left me-1"></i> यादीकडे परत जा
+    </a>
+  </div>
+
+  <div class="row g-4">
+    <!-- Complaint Information -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4 h-100">
+        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">नागरिक माहिती व समस्या स्वरूप</h5>
+        
+        <table class="table table-borderless small mb-3">
+          <tbody>
+            <tr>
+              <th style="width: 35%;">तक्रारदार:</th>
+              <td class="fw-bold">{{ complaint.reporter_name }}</td>
+            </tr>
+            <tr>
+              <th>संपर्क क्रमांक:</th>
+              <td>{{ complaint.reporter_contact }}</td>
+            </tr>
+            <tr>
+              <th>प्रकार (Category):</th>
+              <td><span class="badge bg-light text-dark border text-capitalize">{{ complaint.category }}</span></td>
+            </tr>
+            <tr>
+              <th>घटनास्थळ:</th>
+              <td>{{ complaint.location_address or '-' }}</td>
+            </tr>
+            {% if complaint.latitude and complaint.longitude %}
+              <tr>
+                <th>GPS गुणक:</th>
+                <td>
+                  <code>{{ complaint.latitude }}, {{ complaint.longitude }}</code>
+                  <a href="https://www.google.com/maps/search/?api=1&query={{ complaint.latitude }},{{ complaint.longitude }}" target="_blank" class="ms-1 text-success">
+                    Google Maps उघडा
+                  </a>
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+        <h6 class="fw-bold text-dark">सविस्तर वर्णन:</h6>
+        <div class="p-3 bg-light rounded-3 text-secondary mb-3 small" style="line-height: 1.6;">
+          {{ complaint.description }}
+        </div>
+
+        {% if complaint.image_path %}
+          <h6 class="fw-bold text-dark">जोडलेले छायाचित्र:</h6>
+          <img src="{{ complaint.image_path }}" alt="Complaint image" class="img-fluid rounded border mb-3" style="max-height: 220px;">
+        {% endif %}
+
+        <!-- Updates Timeline -->
+        <h6 class="fw-bold text-dark border-top pt-3 mb-2">मागील कारवाई नोंद:</h6>
+        <div class="d-flex flex-column gap-2" style="font-size: 0.84rem;">
+          {% for up in complaint.updates %}
+            <div class="p-2 rounded {% if up.update_type == 'internal' %}bg-warning-subtle border-start border-3 border-warning{% else %}bg-light border-start border-3 border-success{% endif %}">
+              <div class="d-flex justify-content-between text-muted small">
+                <span class="fw-semibold">{{ up.update_type|upper }}</span>
+                <span>{{ up.created_at.strftime('%d %b %H:%M') if up.created_at else '' }}</span>
+              </div>
+              <div class="text-dark">{{ up.message }}</div>
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Administrative Action Form -->
+    <div class="col-lg-6">
+      <div class="civic-card p-4 h-100">
+        <h5 class="fw-bold text-success border-bottom pb-2 mb-3">प्रशासकीय कारवाई व स्थिती अद्यतन</h5>
+
+        <form action="{{ url_for('admin.complaint_detail', cid=complaint.id) }}" method="POST">
+          <input type="hidden" name="action" value="update_status">
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">सद्यस्थिती बदला (Status) <span class="text-danger">*</span></label>
+            <select name="status" class="form-select">
+              <option value="submitted" {% if complaint.status == 'submitted' %}selected{% endif %}>प्राप्त (Submitted)</option>
+              <option value="in_progress" {% if complaint.status == 'in_progress' %}selected{% endif %}>प्रगतीपथावर (In Progress)</option>
+              <option value="resolved" {% if complaint.status == 'resolved' %}selected{% endif %}>निवारण झाले (Resolved)</option>
+              <option value="rejected" {% if complaint.status == 'rejected' %}selected{% endif %}>अमान्य / फेटाळली (Rejected)</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">जबाबदार कर्मचारी / विभाग (Assigned Staff)</label>
+            <input type="text" name="assigned_staff" class="form-control" placeholder="उदा. ग्रामसेवक / पाणीपुरवठा कर्मचारी" value="{{ complaint.assigned_staff or '' }}">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">सार्वजनिक प्रगती संदेश (Public Update)</label>
+            <textarea name="public_message" rows="2" class="form-control" placeholder="हा संदेश नागरिकाला ट्रॅकिंग पेजवर दिसेल..."></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">अंतर्गत कार्यालयीन टीप (Internal Note - Only for Staff)</label>
+            <textarea name="internal_note" rows="2" class="form-control" placeholder="केवळ प्रशासक व कर्मचाऱ्यांना दिसेल..."></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-bold">अंतिम निवारण तपशील (Resolution Details - If Resolved)</label>
+            <textarea name="resolution_details" rows="2" class="form-control" placeholder="निवारण कसे केले गेले याचा तपशील...">{{ complaint.resolution_details or '' }}</textarea>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-belkhed fw-bold">
+              <i class="bi bi-check-circle me-1"></i> स्थिती व नोंदी सेव्ह करा
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

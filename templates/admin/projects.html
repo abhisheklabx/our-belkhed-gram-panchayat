@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}विकास प्रकल्प व्यवस्थापन | Projects | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 class="fw-bold text-success mb-0"><i class="bi bi-hammer me-2"></i> गाव विकास प्रकल्प व्यवस्थापन (Development Projects)</h3>
+      <p class="text-muted small mb-0">मंजूर अंदाजपत्रक, काम प्रगती व स्थळ माहिती</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+      <i class="bi bi-arrow-left me-1"></i> Dashboard
+    </a>
+  </div>
+
+  <div class="row g-4">
+    <!-- Form -->
+    <div class="col-lg-5">
+      <div class="civic-card p-4">
+        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">नवीन विकास काम नोंदवा</h5>
+
+        <form action="{{ url_for('admin.projects') }}" method="POST">
+          <div class="mb-3">
+            <label class="form-label small fw-bold">कामाचे शीर्षक (Project Title) <span class="text-danger">*</span></label>
+            <input type="text" name="title" class="form-control" placeholder="उदा. मुख्य रस्ता सिमेंट काँक्रीटीकरण" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">मंजूर निधी / अंदाजपत्रक (Approved Budget)</label>
+            <input type="text" name="approved_budget" class="form-control" placeholder="उदा. ₹ 18,50,000">
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small fw-bold">सुरुवात दिनांक</label>
+              <input type="text" name="start_date" class="form-control form-control-sm" placeholder="उदा. 15 Jan 2026">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">अपेक्षित पूर्णता</label>
+              <input type="text" name="expected_completion" class="form-control form-control-sm" placeholder="उदा. 30 Jun 2026">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">स्थिती (Status)</label>
+            <select name="status" class="form-select form-select-sm">
+              <option value="planned">नियोजित (Planned)</option>
+              <option value="ongoing" selected>प्रगतीपथावर (Ongoing)</option>
+              <option value="completed">पूर्ण झाले (Completed)</option>
+            </select>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Latitude</label>
+              <input type="text" name="latitude" class="form-control form-control-sm" placeholder="19.616600">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Longitude</label>
+              <input type="text" name="longitude" class="form-control form-control-sm" placeholder="77.636900">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">सविस्तर वर्णन (Description) <span class="text-danger">*</span></label>
+            <textarea name="description" rows="3" class="form-control" placeholder="कामाचे स्वरूप व निधी स्त्रोत..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-belkhed w-100 fw-bold">
+            <i class="bi bi-save me-1"></i> प्रकल्प सेव्ह करा
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Projects List -->
+    <div class="col-lg-7">
+      <div class="civic-card p-4">
+        <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">नोंदणीकृत विकास कामे</h5>
+
+        <div class="d-flex flex-column gap-3">
+          {% for p in projects %}
+            <div class="p-3 bg-light rounded border">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <h6 class="fw-bold text-dark mb-0">{{ p.title }}</h6>
+                <span class="badge {% if p.status == 'completed' %}bg-success{% elif p.status == 'ongoing' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                  {{ p.status }}
+                </span>
+              </div>
+              <p class="text-muted small mb-2">{{ p.description }}</p>
+              <div class="small d-flex justify-content-between text-secondary">
+                <span><strong>निधी:</strong> {{ p.approved_budget or '-' }}</span>
+                <span><strong>कालावधी:</strong> {{ p.start_date or '-' }} ते {{ p.expected_completion or '-' }}</span>
+              </div>
+            </div>
+          {% else %}
+            <div class="text-muted small">कोणताही प्रकल्प नोंदवलेला नाही.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

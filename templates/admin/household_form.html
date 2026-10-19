@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}{% if household %}घर माहिती संपादन{% else %}नवीन घर नोंदणी{% endif %} | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mx-auto" style="max-width: 800px; background: #ffffff;">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+      <div>
+        <h3 class="fw-bold text-success mb-1">
+          {% if household %}
+            <i class="bi bi-pencil-square me-1"></i> घर नोंद संपादन (Edit Household)
+          {% else %}
+            <i class="bi bi-plus-circle-fill me-1"></i> नवीन घर नोंदणी (Add Household)
+          {% endif %}
+        </h3>
+        <p class="text-muted small mb-0">बेलखेड ग्रामपंचायत आवास नोंदवही</p>
+      </div>
+      <a href="{{ url_for('admin.households') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+        <i class="bi bi-arrow-left me-1"></i> मागे जा
+      </a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+      
+      <!-- Name Breakdown -->
+      <h6 class="fw-bold text-dark mb-3"><i class="bi bi-person-lines-fill me-1"></i> कुटुंबप्रमुखाचे नाव:</h6>
+      <div class="row g-2 mb-3">
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">पहिले नाव (First Name)</label>
+          <input type="text" id="fnameInput" name="first_name" class="form-control" placeholder="उदा. रमेश" value="{{ household.first_name if household else '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">वडिलांचे / पतीचे नाव (Middle Name)</label>
+          <input type="text" id="mnameInput" name="middle_name" class="form-control" placeholder="उदा. किसन" value="{{ household.middle_name if household else '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">आडनाव (Last Name / Surname) <span class="text-danger">*</span></label>
+          <input type="text" id="lnameInput" name="last_name" class="form-control" placeholder="उदा. ठाकरे" value="{{ household.last_name if household else '' }}" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-bold">एकत्रित पूर्ण नाव (Full Name Display) <span class="text-danger">*</span></label>
+        <input type="text" id="fullnameInput" name="full_name" class="form-control" placeholder="उदा. रमेश किसन ठाकरे" value="{{ household.full_name if household else '' }}" required>
+      </div>
+
+      <!-- House number and Locality -->
+      <div class="row g-2 mb-3">
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">घर क्रमांक (House Number) <span class="text-danger">*</span></label>
+          <input type="text" name="house_number" class="form-control" placeholder="उदा. BLK-01 किंवा 124" value="{{ household.house_number if household else '' }}" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">परिसर / गल्ली (Locality)</label>
+          <input type="text" name="locality" class="form-control" placeholder="उदा. वार्ड क्र. १, गावठाण" value="{{ household.locality if household else '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold">जवळची खूण (Landmark)</label>
+          <input type="text" name="landmark" class="form-control" placeholder="उदा. मारुती मंदिरासमोर" value="{{ household.landmark if household else '' }}">
+        </div>
+      </div>
+
+      <!-- Coordinates with helper -->
+      <h6 class="fw-bold text-dark mt-4 mb-2"><i class="bi bi-geo-alt-fill me-1"></i> गुगल मॅप्स स्थान गुणक (Coordinates):</h6>
+      <div class="row g-2 mb-2">
+        <div class="col-md-6">
+          <label class="form-label small fw-bold">अक्षांश (Latitude) <span class="text-danger">*</span></label>
+          <input type="text" id="latField" name="latitude" class="form-control" placeholder="उदा. 19.6164779" value="{{ household.latitude if household else '' }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-bold">रेखांश (Longitude) <span class="text-danger">*</span></label>
+          <input type="text" id="lngField" name="longitude" class="form-control" placeholder="उदा. 77.6374039" value="{{ household.longitude if household else '' }}" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="setSampleCoords(19.6164779, 77.6374039)">
+          <i class="bi bi-pin-angle"></i> नमुना घर गुणक भरा (19.6164779, 77.6374039)
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="setSampleCoords(19.616556, 77.636556)">
+          <i class="bi bi-geo"></i> गाव केंद्र बिंदू भरा (19.616556, 77.636556)
+        </button>
+      </div>
+
+      <!-- Photo Upload -->
+      <div class="mb-4">
+        <label class="form-label small fw-bold">घराचे छायाचित्र (House Photo)</label>
+        <input type="file" name="photo" class="form-control" accept="image/*">
+        {% if household and household.image_path %}
+          <div class="mt-2 small text-muted">
+            सध्याचे छायाचित्र: <a href="{{ household.image_path }}" target="_blank">पहा</a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Privacy & Visibility Switches -->
+      <h6 class="fw-bold text-dark mt-4 mb-3"><i class="bi bi-shield-check me-1"></i> गोपनीयता व दृश्यता परवानग्या:</h6>
+      <div class="form-check form-switch mb-2">
+        <input class="form-check-input" type="checkbox" name="listing_consent" id="consentSwitch" {% if not household or household.listing_consent %}checked{% endif %}>
+        <label class="form-check-label fw-semibold" for="consentSwitch">
+          कुटुंबाने सार्वजनिक यादीत नाव दर्शवण्यास अधिकृत संमती (Listing Consent) दिली आहे
+        </label>
+      </div>
+
+      <div class="form-check form-switch mb-4">
+        <input class="form-check-input" type="checkbox" name="public_visibility" id="visibleSwitch" {% if not household or household.public_visibility %}checked{% endif %}>
+        <label class="form-check-label fw-semibold" for="visibleSwitch">
+          सार्वजनिक 'घर शोधा' (Find a Home) सर्च रिझल्ट्समध्ये हे घर थेट दाखवा
+        </label>
+      </div>
+
+      <!-- Submit -->
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-belkhed btn-lg fw-bold">
+          <i class="bi bi-check-circle-fill me-1"></i> घर नोंद सेव्ह करा (Save Record)
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function setSampleCoords(lat, lng) {
+  document.getElementById('latField').value = lat;
+  document.getElementById('lngField').value = lng;
+}
+
+// Auto update full name if empty
+const f = document.getElementById('fnameInput');
+const m = document.getElementById('mnameInput');
+const l = document.getElementById('lnameInput');
+const full = document.getElementById('fullnameInput');
+
+[f, m, l].forEach(el => {
+  el.addEventListener('input', () => {
+    if (!full.dataset.customized) {
+      full.value = `${f.value} ${m.value} ${l.value}`.replace(/\s+/g, ' ').trim();
+    }
+  });
+});
+full.addEventListener('input', () => {
+  full.dataset.customized = "true";
+});
+</script>
+{% endblock %}

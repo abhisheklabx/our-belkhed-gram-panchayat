@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}तक्रार नोंदणी | Register Complaint | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="mb-4 text-center">
+    <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-1 rounded-pill mb-2">
+      <i class="bi bi-shield-exclamation me-1"></i> लोक तक्रार निवारण कक्ष
+    </span>
+    <h2 class="fw-bold text-success">{{ t('complaint_title') }}</h2>
+    <p class="text-muted mx-auto" style="max-width: 650px;">
+      {{ t('complaint_sub') }}
+    </p>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mx-auto" style="max-width: 760px; background: #ffffff;">
+    <form action="{{ url_for('public.complaint_new') }}" method="POST" enctype="multipart/form-data">
+      
+      <!-- Reporter Details -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">आपले पूर्ण नाव (Full Name) <span class="text-danger">*</span></label>
+          <input type="text" name="reporter_name" class="form-control" placeholder="उदा. रमेश ठाकरे" value="{{ current_user.name if current_user else '' }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">मोबाईल किंवा संपर्क क्रमांक <span class="text-danger">*</span></label>
+          <input type="text" name="reporter_contact" class="form-control" placeholder="उदा. 9876543210" value="{{ current_user.email_or_phone if current_user else '' }}" required>
+        </div>
+      </div>
+
+      <!-- Category -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">समस्येचा प्रकार (Category) <span class="text-danger">*</span></label>
+        <select name="category" class="form-select" required>
+          <option value="" disabled selected>-- समस्येचा वर्ग निवडा --</option>
+          <option value="water">💧 पाणीपुरवठा व पाईपलाईन गळती (Water Supply)</option>
+          <option value="road">🛣️ रस्ता खड्डे व दुरुस्ती (Broken Road)</option>
+          <option value="drainage">🚰 सांडपाणी व गटार अडचण (Drainage Issue)</option>
+          <option value="sanitation">🧹 कचरा व स्वच्छता (Cleanliness & Waste)</option>
+          <option value="electricity">💡 स्ट्रीटलाईट / पथदिवे बिघाड (Streetlight Issue)</option>
+          <option value="infrastructure">🏛️ सार्वजनिक वास्तू नुकसान (Public Infrastructure)</option>
+          <option value="other">📋 इतर समस्या (Other)</option>
+        </select>
+      </div>
+
+      <!-- Description with Voice Typing -->
+      <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <label class="form-label fw-bold mb-0">समस्येचे सविस्तर वर्णन (Description) <span class="text-danger">*</span></label>
+          <button type="button" class="voice-btn btn-sm" onclick="voiceTyping.toggle('complaintDescInput', this)" title="आवाजाने वर्णन सांगा">
+            <i class="bi bi-mic"></i> बोलून लिहा (Voice Type)
+          </button>
+        </div>
+        <textarea id="complaintDescInput" name="description" rows="4" class="form-control" placeholder="समस्येचे ठिकाण, स्वरूप आणि अडचण येथे सविस्तर लिहा किंवा माईक बटण दाबून बोला..." required></textarea>
+        <small class="text-muted">आपण मराठी, हिंदी किंवा इंग्रजीत बोलून टाईप करू शकता.</small>
+      </div>
+
+      <!-- Location details with GPS auto-locate -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">घटनेचे ठिकाण / लँडमार्क (Location Landmark)</label>
+        <div class="input-group mb-2">
+          <input type="text" id="complaintAddress" name="location_address" class="form-control" placeholder="उदा. हनुमान मंदिरासमोर, वार्ड क्र. २...">
+          <button type="button" class="btn btn-outline-success" onclick="getCurrentLocationForComplaint('complaintLat', 'complaintLng', 'complaintAddress')">
+            <i class="bi bi-crosshair me-1"></i> वर्तमान जीपीएस स्थान जोडा
+          </button>
+        </div>
+        <div class="row g-2">
+          <div class="col-6">
+            <input type="text" id="complaintLat" name="latitude" class="form-control form-control-sm text-muted" placeholder="Latitude (अक्षांश)">
+          </div>
+          <div class="col-6">
+            <input type="text" id="complaintLng" name="longitude" class="form-control form-control-sm text-muted" placeholder="Longitude (रेखांश)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo Upload -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">समस्येचे छायाचित्र जोडा (Upload Photo - Optional)</label>
+        <input type="file" name="photo" class="form-control" accept="image/*">
+        <small class="text-muted">केवळ JPG, PNG किंवा WEBP छायाचित्र (कमाल 8MB).</small>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-belkhed btn-lg fw-bold">
+          <i class="bi bi-send-check-fill me-1"></i> तक्रार सादर करा (Submit Grievance)
+        </button>
+        <a href="{{ url_for('public.complaint_track') }}" class="btn btn-link text-muted text-decoration-none text-center">
+          मागील तक्रारीची स्थिती तपासायची आहे का? (Track existing complaint)
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+{% endblock %}

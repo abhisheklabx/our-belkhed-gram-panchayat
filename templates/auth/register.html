@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}नागरिक नोंदणी | Register | {{ t('site_title') }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mx-auto" style="max-width: 600px; background: #ffffff;">
+    
+    <div class="text-center mb-3">
+      <img src="{{ url_for('static', filename='images/belkhed_logo.png') }}" alt="Belkhed Logo" class="brand-logo mb-2" style="height: 60px; width: 60px;">
+      <h3 class="fw-bold text-success mb-1">{{ t('auth_register_title') }}</h3>
+      <p class="text-muted small">आपले बेलखेड - अधिकृत नागरिक व ग्रामपंचायत सेवा खाते</p>
+    </div>
+
+    <!-- MANDATORY USER PRIVACY NOTICE BANNER -->
+    <div class="privacy-banner mb-4">
+      <div class="d-flex">
+        <i class="bi bi-shield-lock-fill fs-4 me-2 text-success"></i>
+        <div style="font-size: 0.88rem; line-height: 1.5;" class="text-dark">
+          <strong>गोपनीयता व सुरक्षा सूचना:</strong><br>
+          {{ t('auth_privacy_banner') }}
+        </div>
+      </div>
+    </div>
+
+    <form action="{{ url_for('auth.register') }}" method="POST">
+      
+      <!-- Full Name -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">पूर्ण नाव (Full Name) <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light text-muted"><i class="bi bi-person"></i></span>
+          <input type="text" name="name" class="form-control" placeholder="उदा. रमेश किसन ठाकरे" required>
+        </div>
+      </div>
+
+      <!-- Email or Mobile -->
+      <div class="mb-3">
+        <label class="form-label fw-bold">ईमेल किंवा मोबाईल नंबर (Email or Mobile) <span class="text-danger">*</span></label>
+        <div class="input-group">
+          <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+          <input type="text" name="email_or_phone" class="form-control" placeholder="उदा. 9876543210 किंवा ramesh@gmail.com" required>
+        </div>
+        <small class="text-muted">हाच आपला लॉगिन आयडी असेल.</small>
+      </div>
+
+      <!-- Password -->
+      <div class="row g-2 mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">संकेतशब्द (Password) <span class="text-danger">*</span></label>
+          <input type="password" name="password" class="form-control" placeholder="किमान ६ वर्ण" minlength="6" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">पासवर्ड खात्री करा <span class="text-danger">*</span></label>
+          <input type="password" name="confirm_password" class="form-control" placeholder="पुन्हा पासवर्ड टाका" minlength="6" required>
+        </div>
+      </div>
+
+      <!-- Preferred Language & Connection -->
+      <div class="row g-2 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">पसंतीची भाषा</label>
+          <select name="preferred_language" class="form-select">
+            <option value="mr" selected>मराठी (Marathi)</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold">गावाशी संबंध</label>
+          <select name="village_connection" class="form-select">
+            <option value="resident" selected>स्थानिक रहिवासी (Resident)</option>
+            <option value="visitor">पाहुणे / इतर गावचे नागरिक (Visitor)</option>
+            <option value="native_away">गावचे नागरिक (कामानिमित्त बाहेर)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-belkhed btn-lg fw-bold">
+          <i class="bi bi-person-check-fill me-1"></i> खाते तयार करा (Create Account)
+        </button>
+      </div>
+
+      <div class="text-center text-muted small">
+        आधीच नोंदणी केली आहे का? 
+        <a href="{{ url_for('auth.login') }}" class="text-success fw-bold text-decoration-none">येथे लॉगिन करा</a>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+{% endblock %}
